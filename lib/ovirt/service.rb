@@ -35,7 +35,7 @@ module Ovirt
 
     def api(reload = false)
       @api   = nil if reload
-      @api ||= xml_to_object(Ovirt, resource_get)
+      @api ||= xml_to_object(Api, resource_get)
     end
 
     def product_info
