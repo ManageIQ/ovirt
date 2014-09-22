@@ -1,23 +1,18 @@
-# Push the lib directory onto the load path
-$:.push(File.expand_path(File.join(File.dirname(__FILE__), '..', '..')))
+require_relative './example_helper'
 
-require_relative '../../bundler_setup'
-require_relative '../rhevm_api'
-
-RHEVM_SERVER        = raise "please define RHEVM_SERVER"
-RHEVM_PORT_3_0      = 8443
-RHEVM_PORT_3_1      = 443
-RHEVM_DOMAIN        = raise "please define RHEVM_DOMAIN"
-RHEVM_USERNAME      = raise "please define RHEVM_USERNAME"
-RHEVM_PASSWORD      = raise "please define RHEVM_PASSWORD"
+SERVER   = raise "please define SERVER"
+PORT     = 443
+DOMAIN   = raise "please define DOMAIN"
+USERNAME = raise "please define USERNAME"
+PASSWORD = raise "please define PASSWORD"
 
 rhevm_em = RhevmEventMonitor.new(
-          :server   => RHEVM_SERVER,
-          :port     => RHEVM_PORT_3_1,
-          :domain   => RHEVM_DOMAIN,
-          :username => RHEVM_USERNAME,
-          :password => RHEVM_PASSWORD)
-
+  :server   => SERVER,
+  :port     => PORT,
+  :domain   => DOMAIN,
+  :username => USERNAME,
+  :password => PASSWORD
+)
 
 def print_object(object, caption, indent = 0, recurse = true)
   indentation = "\t" * indent

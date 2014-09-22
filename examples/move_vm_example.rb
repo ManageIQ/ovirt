@@ -1,29 +1,17 @@
-# Push the lib directory onto the load path
-$:.push(File.expand_path(File.join(File.dirname(__FILE__), '..', '..')))
+require_relative './example_helper'
 
-require_relative '../../bundler_setup'
-require_relative '../rhevm_api'
+STORAGE_DOMAIN_1 = raise "please define STORAGE_DOMAIN_1"
+STORAGE_DOMAIN_2 = raise "please define STORAGE_DOMAIN_2"
+VM_NAME          = raise "please define VM_NAME"
 
-RHEVM_SERVER        = raise "please define RHEVM_SERVER"
-RHEVM_PORT          = 443
-RHEVM_DOMAIN        = raise "please define RHEVM_DOMAIN"
-RHEVM_USERNAME      = raise "please define RHEVM_USERNAME"
-RHEVM_PASSWORD      = raise "please define RHEVM_PASSWORD"
-VM_NAME             = raise "please define VM_NAME"
+rhevm = ExampleHelper.service
 
-rhevm = RhevmService.new(
-          :server   => RHEVM_SERVER,
-          :port     => RHEVM_PORT,
-          :domain   => RHEVM_DOMAIN,
-          :username => RHEVM_USERNAME,
-          :password => RHEVM_PASSWORD)
-
-sd1 = RhevmStorageDomain.find_by_name(rhevm, "MTCRHDS001")
+sd1 = Ovirt::StorageDomain.find_by_name(rhevm, STORAGE_DOMAIN_1)
 puts "SD1: #{sd1.inspect}"
-sd2 = RhevmStorageDomain.find_by_name(rhevm, "MTCRHDS002")
+sd2 = Ovirt::StorageDomain.find_by_name(rhevm, STORAGE_DOMAIN_2)
 puts "SD2: #{sd2.inspect}"
 
-vm = RhevmVm.find_by_name(rhevm, VM_NAME)
+vm = Ovirt::Vm.find_by_name(rhevm, VM_NAME)
 puts "VM: #{vm.inspect}"
 
 disks = vm.disks
@@ -35,7 +23,7 @@ puts "DISK SD: #{disk[:storage_domains].inspect}"
 sd_id = disk[:storage_domains].first[:id]
 puts "DISK SD ID: #{sd_id.inspect}"
 
-sd = RhevmStorageDomain.find_by_id(rhevm, sd_id)
+sd = Ovirt::StorageDomain.find_by_id(rhevm, sd_id)
 puts "DISK SD: #{sd.inspect}"
 
 if sd[:id] == sd1[:id]

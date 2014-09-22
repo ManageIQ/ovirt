@@ -1,22 +1,4 @@
-# Push the lib directory onto the load path
-$:.push(File.expand_path(File.join(File.dirname(__FILE__), '..', '..')))
-
-require_relative '../../bundler_setup'
-require_relative '../rhevm_api'
-
-RHEVM_SERVER        = raise "please define RHEVM_SERVER"
-RHEVM_PORT          = 443
-RHEVM_DOMAIN        = raise "please define RHEVM_DOMAIN"
-RHEVM_USERNAME      = raise "please define RHEVM_USERNAME"
-RHEVM_PASSWORD      = raise "please define RHEVM_PASSWORD"
-
-rhevm = RhevmInventory.new(
-          :server   => RHEVM_SERVER,
-          :port     => RHEVM_PORT,
-          :domain   => RHEVM_DOMAIN,
-          :username => RHEVM_USERNAME,
-          :password => RHEVM_PASSWORD)
-
+require_relative './example_helper'
 
 def print_object(object, caption, indent = 0, recurse = true)
   indentation = "\t" * indent
@@ -42,6 +24,7 @@ def collect(rhevm, method, caption = nil)
   puts "----------------------------------------------"
 end
 
+rhevm = ExampleHelper.service
 collect(rhevm, :datacenters)
 collect(rhevm, :clusters)
 collect(rhevm, :hosts)
@@ -51,4 +34,3 @@ collect(rhevm, :templates)
 collect(rhevm, :networks)
 collect(rhevm, :events)
 collect(rhevm, :roles)
-

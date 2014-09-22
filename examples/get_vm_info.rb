@@ -1,15 +1,6 @@
-# Push the lib directory onto the load path
-$:.push(File.expand_path(File.join(File.dirname(__FILE__), '..', '..')))
+require_relative './example_helper'
 
-require_relative '../../bundler_setup'
-require_relative '../rhevm_api'
-
-RHEVM_SERVER        = raise "please define RHEVM_SERVER"
-RHEVM_PORT          = 443
-RHEVM_DOMAIN        = raise "please define RHEVM_DOMAIN"
-RHEVM_USERNAME      = raise "please define RHEVM_USERNAME"
-RHEVM_PASSWORD      = raise "please define RHEVM_PASSWORD"
-VM_NAME              = raise "please define VM_NAME"
+VM_NAME = raise "please define VM_NAME"
 
 def indentedPrint(s, i)
   print "    " * i
@@ -21,7 +12,7 @@ def dump_vm(vm, level=0)
   # puts "\nVM: #{vm.inspect}"
 
   dump_disks(vm.disks)
-  
+
   puts
   indentedPrint "Snapshots:", level+1
   vm.snapshots.each do |s|
@@ -47,14 +38,8 @@ def dump_snapshot(s, level=0)
   dump_disks(disks, level+1)
 end
 
-$rhevm = RhevmService.new(
-          :server   => RHEVM_SERVER,
-          :port     => RHEVM_PORT,
-          :domain   => RHEVM_DOMAIN,
-          :username => RHEVM_USERNAME,
-          :password => RHEVM_PASSWORD)
-
-vm = RhevmVm.find_by_name($rhevm, VM_NAME)
+rhevm = ExampleHelper.service
+vm    = Ovirt::Vm.find_by_name(rhevm, VM_NAME)
 dump_vm(vm)
 
 exit

@@ -1,28 +1,14 @@
-# Push the lib directory onto the load path
-$:.push(File.expand_path(File.join(File.dirname(__FILE__), '..', '..')))
+require_relative './example_helper'
 
-require_relative '../../bundler_setup'
-require_relative '../rhevm_api'
-require 'pp'
+CLUSTER_NAME  = raise "please define CLUSTER_NAME"
+ISO_NAME      = raise "please define ISO_NAME"
+TEMPLATE_NAME = raise "please define TEMPLATE_NAME"
+ROOT_PASSWORD = raise "please define ROOT_PASSWORD"
+VM_NAME       = raise "please define VM_NAME"
 
-RHEVM_SERVER        = raise "please define RHEVM_SERVER"
-RHEVM_PORT          = 443
-RHEVM_DOMAIN        = raise "please define RHEVM_DOMAIN"
-RHEVM_USERNAME      = raise "please define RHEVM_USERNAME"
-RHEVM_PASSWORD      = raise "please define RHEVM_PASSWORD"
-VM_NAME             = raise "please define VM_NAME"
-ROOT_PASSWORD
-ACTIVATION_KEY
-
-rhevm = RhevmService.new(
-          :server   => RHEVM_SERVER,
-          :domain   => RHEVM_DOMAIN,
-          :username => RHEVM_USERNAME,
-          :password => RHEVM_PASSWORD)
-
-iso_name = "file.iso"
-template = RhevmTemplate.find_by_name(rhevm, "PxeRhelRhevm31")
-cluster  = RhevmCluster.find_by_name(rhevm, "iSCSI")
+rhevm    = ExampleHelper.service
+cluster  = Ovirt::Cluster.find_by_name(rhevm, CLUSTER_NAME)
+template = Ovirt::Template.find_by_name(rhevm, TEMPLATE_NAME)
 
 payload  = { "ks.cfg" => <<-EOF }
 ##### RHEL 6.2 Desktop Kickstart file #####
@@ -47,9 +33,6 @@ shutdown
 ### Post Install Scripts
 %post --log=/root/ks-post.log
 
-# Register to RHN using an activation key for our account
-rhnreg_ks --activationkey=#{ACTIVATION_KEY} --force
-
 # Install virtualization agent package
 yum -y install rhev-agent
 
@@ -66,14 +49,14 @@ EOF
 
 def create_or_replace_vm(rhevm, vm_name, template, cluster)
   puts "Finding  VM #{vm_name}"
-  vm = RhevmVm.find_by_name(rhevm, vm_name)
+  vm = Ovirt::Vm.find_by_name(rhevm, vm_name)
 
   if vm
     print "Deleting VM #{vm_name}"
     vm_id = vm[:id]
     vm.destroy
     loop do
-      vm = RhevmVm.find_by_id(rhevm, vm_id)
+      vm = Ovirt::Vm.find_by_id(rhevm, vm_id)
       break if vm.nil?
       print "."
       sleep 1
@@ -103,7 +86,7 @@ def boot_with_retry(vm, iso_name)
   print "Booting from ISO"
   begin
     ret = vm.boot_from_cdrom(iso_name)
-  rescue RhevmApiVmNotReadyToBoot
+  rescue OvirtVmNotReadyToBoot
     print "."
     sleep 1
     retry
@@ -118,7 +101,7 @@ puts
 puts "Attaching floppy payload"
 puts vm.attach_floppy(payload)
 
-boot_with_retry(vm, iso_name)
+boot_with_retry(vm, ISO_NAME)
 puts
 
 wait_for_power_off(vm)
