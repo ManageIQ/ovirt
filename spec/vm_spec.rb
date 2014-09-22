@@ -1,15 +1,9 @@
-require "spec_helper"
-require 'active_support/core_ext'
-require 'rest-client'
+require 'spec_helper'
 
-$:.push(File.expand_path(File.join(File.dirname(__FILE__), %w{.. .. RedHatEnterpriseVirtualizationManagerAPI})))
-require 'rhevm_api'
-require 'rhevm_vm'
-
-describe RhevmVm do
+describe Ovirt::Vm do
   before do
-    @service = RhevmService.new({:server => "", :username => "", :password => ""})
-    @vm = RhevmVm.new(@service, {
+    @service = Ovirt::Service.new({:server => "", :username => "", :password => ""})
+    @vm = Ovirt::Vm.new(@service, {
        :actions           => {:stop => '/api/vms/128f9ffd-b82c-41e4-8c00-9742ed173bac/stop'},
        :id                => "128f9ffd-b82c-41e4-8c00-9742ed173bac",
        :href              => "/api/vms/128f9ffd-b82c-41e4-8c00-9742ed173bac",
@@ -173,7 +167,7 @@ EOX
   end
 
   context "#stop" do
-    it "should raise RhevmApiVmIsNotRunning if the VM is not running" do
+    it "should raise OvirtVmIsNotRunning if the VM is not running" do
       return_data = <<-EOX.chomp
 <action>
     <fault>
@@ -189,7 +183,7 @@ EOX
       end
 
       @service.stub(:create_resource).and_return(rest_client)
-      expect { @vm.stop }.to raise_error RhevmApiVmIsNotRunning
+      expect { @vm.stop }.to raise_error OvirtVmIsNotRunning
     end
   end
 end

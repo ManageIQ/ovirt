@@ -1,13 +1,9 @@
-require "spec_helper"
+require 'spec_helper'
 
-$:.push(File.expand_path(File.join(File.dirname(__FILE__), %w{.. .. RedHatEnterpriseVirtualizationManagerAPI})))
-require 'rhevm_api'
-require 'rhevm_template'
-
-describe RhevmTemplate do
+describe Ovirt::Template do
   before do
     @service = double('service')
-    @template = RhevmTemplate.new(@service, {
+    @template = Ovirt::Template.new(@service, {
        :id                => "128f9ffd-b82c-41e4-8c00-9742ed173bac",
        :href              => "/api/vms/128f9ffd-b82c-41e4-8c00-9742ed173bac",
        :cluster           => {
@@ -100,7 +96,7 @@ EOX
 
     context "#create_new_disks_from_template" do
       before do
-        @disk = RhevmDisk.new(@service, {
+        @disk = Ovirt::Disk.new(@service, {
           :id=>"01eae62b-90df-424d-978c-beaa7eb2f7f6",
           :href=>"/api/templates/54f1b9f4-0e89-4c72-9a26-f94dcb857264/disks/01eae62b-90df-424d-978c-beaa7eb2f7f6",
           :name=>"clone_Disk1",
@@ -131,8 +127,8 @@ EOX
 
     context "build_clone_xml" do
       it "Properly sets vm/cpu/topology attributes" do
-        RhevmObject.stub(:object_to_id)
-        xml     = @template.send(:build_clone_xml, :name => "Blank", :cluster => "default")
+        Object.stub(:object_to_id)
+        xml     = @template.send(:build_clone_xml, :name => "Blank", :cluster => "6b8f1c1e-3eb0-11e4-8420-56847afe9799")
         nodeset = Nokogiri::XML.parse(xml).xpath("//vm/cpu/topology")
         node    = nodeset.first
 
