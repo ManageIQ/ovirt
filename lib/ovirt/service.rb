@@ -13,8 +13,7 @@ module Ovirt
     attr_accessor :session_id
 
     def self.name_to_class(name)
-      require File.join(File.dirname(__FILE__), "./rhevm_#{name}")
-      Kernel.const_get(name.camelize)
+      Ovirt.const_get(name.camelize)
     end
 
     def xml_to_object(klass, xml)
