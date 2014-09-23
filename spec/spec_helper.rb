@@ -16,3 +16,9 @@ RSpec.configure do |config|
 end
 
 require 'ovirt'
+
+begin
+  require 'coveralls'
+  Coveralls.wear!
+rescue LoadError
+end

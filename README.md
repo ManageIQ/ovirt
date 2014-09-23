@@ -1,5 +1,11 @@
 # Ovirt
 
+[![Gem Version](https://badge.fury.io/rb/ovirt.png)](http://badge.fury.io/rb/ovirt)
+[![Build Status](https://travis-ci.org/ManageIQ/ovirt.svg)](https://travis-ci.org/ManageIQ/ovirt)
+[![Code Climate](https://codeclimate.com/github/ManageIQ/ovirt.png)](https://codeclimate.com/github/ManageIQ/ovirt)
+[![Coverage Status](https://coveralls.io/repos/ManageIQ/ovirt/badge.png)](https://coveralls.io/r/ManageIQ/ovirt)
+[![Dependency Status](https://gemnasium.com/ManageIQ/ovirt.png)](https://gemnasium.com/ManageIQ/ovirt)
+
 TODO: Write a gem description
 
 ## Installation
