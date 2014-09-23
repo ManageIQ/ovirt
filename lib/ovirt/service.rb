@@ -202,7 +202,7 @@ module Ovirt
       else
         raise
       end
-    rescue RestClient::ResourceNotFound, OvirtError
+    rescue RestClient::ResourceNotFound, Ovirt::Error
       raise
     rescue Exception => e
       msg = "#{log_header}: class = #{e.class.name}, message=#{e.message}, URI=#{resource.url}"
@@ -229,7 +229,7 @@ module Ovirt
       action = doc.xpath("action").first
       node   = action || doc
       reason = node.xpath("fault/detail").text
-      raise OvirtError, reason
+      raise Ovirt::Error, reason
     end
 
     def parse_set_cookie_header(set_cookie_header)

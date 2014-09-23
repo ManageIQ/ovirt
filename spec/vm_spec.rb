@@ -167,7 +167,7 @@ EOX
   end
 
   context "#stop" do
-    it "should raise OvirtVmIsNotRunning if the VM is not running" do
+    it "should raise Ovirt::VmIsNotRunning if the VM is not running" do
       return_data = <<-EOX.chomp
 <action>
     <fault>
@@ -183,7 +183,7 @@ EOX
       end
 
       @service.stub(:create_resource).and_return(rest_client)
-      expect { @vm.stop }.to raise_error OvirtVmIsNotRunning
+      expect { @vm.stop }.to raise_error Ovirt::VmIsNotRunning
     end
   end
 end

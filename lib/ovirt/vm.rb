@@ -26,22 +26,22 @@ module Ovirt
       else
         operation(:start)
       end
-    rescue OvirtError => err
-      raise OvirtVmAlreadyRunning, err.message if err.message.include?("VM is running.")
+    rescue Ovirt::Error => err
+      raise VmAlreadyRunning, err.message if err.message.include?("VM is running.")
       raise
     end
 
     def stop
       operation(:stop)
-    rescue OvirtError => err
-      raise OvirtVmIsNotRunning, err.message if err.message.include?("VM is not running")
+    rescue Ovirt::Error => err
+      raise VmIsNotRunning, err.message if err.message.include?("VM is not running")
       raise
     end
 
     def shutdown
       operation(:shutdown)
-    rescue OvirtError => err
-      raise OvirtVmIsNotRunning, err.message if err.message.include?("VM is not running")
+    rescue Ovirt::Error => err
+      raise VmIsNotRunning, err.message if err.message.include?("VM is not running")
       raise
     end
 
@@ -50,7 +50,7 @@ module Ovirt
       # 1. If VM was running, wait for it to stop
       begin
         stop
-      rescue OvirtVmIsNotRunning
+      rescue VmIsNotRunning
       end
 
       super
@@ -74,7 +74,7 @@ module Ovirt
       # </action>
       doc = Nokogiri::XML(response)
       action = doc.xpath("//action").first
-      raise OvirtError, "No Action in Response: #{response.inspect}" if action.nil?
+      raise Ovirt::Error, "No Action in Response: #{response.inspect}" if action.nil?
       action['href']
     end
 
@@ -207,9 +207,9 @@ module Ovirt
           end
         end
       end
-    rescue OvirtError => err
+    rescue Ovirt::Error => err
       raise unless err.message =~ /disks .+ are locked/
-      raise OvirtVmNotReadyToBoot.new [err.message, err]
+      raise VmNotReadyToBoot.new [err.message, err]
     end
 
     def boot_from_cdrom(iso_file_name)
@@ -225,9 +225,9 @@ module Ovirt
           end
         end
       end
-    rescue OvirtError => err
+    rescue Ovirt::Error => err
       raise unless err.message =~ /disks .+ are locked/
-      raise OvirtVmNotReadyToBoot.new [err.message, err]
+      raise VmNotReadyToBoot.new [err.message, err]
     end
 
     def self.parse_xml(xml)
@@ -319,8 +319,8 @@ module Ovirt
 
       response = @service.resource_post(:templates, data)
       Template.create_from_xml(@service, response)
-    rescue OvirtError => err
-      raise OvirtTemplateAlreadyExists, err.message if err.message.include?("Template name already exists")
+    rescue Ovirt::Error => err
+      raise TemplateAlreadyExists, err.message if err.message.include?("Template name already exists")
       raise
     end
   end

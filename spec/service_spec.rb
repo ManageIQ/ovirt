@@ -7,7 +7,7 @@ describe Ovirt::Service do
   end
 
   context "#resource_post" do
-    it "raises OvirtError if HTTP 409 response code received" do
+    it "raises Ovirt::Error if HTTP 409 response code received" do
       error_detail = "API error"
       return_data = <<-EOX.chomp
 <action>
@@ -24,7 +24,7 @@ EOX
       end
 
       @service.stub(:create_resource).and_return(rest_client)
-      expect { @service.resource_post('uri', 'data') }.to raise_error(OvirtError, error_detail)
+      expect { @service.resource_post('uri', 'data') }.to raise_error(Ovirt::Error, error_detail)
     end
   end
 end
