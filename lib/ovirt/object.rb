@@ -252,7 +252,6 @@ module Ovirt
         rel_str        = 'storage_domains' if rel_str == 'storagedomains'
         rel_str        = 'data_centers'    if rel_str == 'datacenters'
         singular       = rel_str.singularize
-        require File.join(File.dirname(__FILE__), "./rhevm_#{singular}")
         klass          = singular.camelize.constantize
         xml            = @service.resource_get(@relationships[m])
         doc            = Nokogiri::XML(xml)
