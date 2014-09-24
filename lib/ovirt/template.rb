@@ -138,8 +138,8 @@ module Ovirt
 
       response = @service.resource_post(:vms, build_clone_xml(options))
       Vm.create_from_xml(@service, response)
-    rescue OvirtError => err
-      raise OvirtVmAlreadyExists, err.message if err.message.include?("VM with the same name already exists")
+    rescue Ovirt::Error => err
+      raise VmAlreadyExists, err.message if err.message.include?("VM with the same name already exists")
       raise
     end
 
