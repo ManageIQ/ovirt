@@ -3,10 +3,10 @@
 [![Gem Version](https://badge.fury.io/rb/ovirt.svg)](http://badge.fury.io/rb/ovirt)
 [![Build Status](https://travis-ci.org/ManageIQ/ovirt.svg)](https://travis-ci.org/ManageIQ/ovirt)
 [![Code Climate](https://codeclimate.com/github/ManageIQ/ovirt.svg)](https://codeclimate.com/github/ManageIQ/ovirt)
-[![Coverage Status](https://coveralls.io/repos/ManageIQ/ovirt/badge.svg)](https://coveralls.io/r/ManageIQ/ovirt)
+[![Coverage Status](http://img.shields.io/coveralls/ManageIQ/ovirt.svg)](https://coveralls.io/r/ManageIQ/ovirt)
 [![Dependency Status](https://gemnasium.com/ManageIQ/ovirt.svg)](https://gemnasium.com/ManageIQ/ovirt)
 
-Ovirt provides a simple Object Oriented interface to the REST API of Ovirt and RHEV-M servers.
+Ovirt provides a simple Object Oriented interface to the REST API of oVirt and RHEV-M servers.
 
 ## Installation
 
@@ -24,7 +24,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+See [examples](https://github.com/ManageIQ/ovirt/tree/master/examples) directory for usage examples.
 
 ## Contributing
 
