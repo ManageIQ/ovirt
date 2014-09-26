@@ -11,21 +11,27 @@ Gem::Specification.new do |spec|
   spec.version       = Ovirt::VERSION
   spec.authors       = authors_hash.keys
   spec.email         = authors_hash.values
-  spec.description   = %q{Ovirt provides a simple Object Oriented interface to the REST API of Ovirt and RHEV-M servers.}
-  spec.summary       = %q{Object Oriented interface for Ovirt}
+  spec.description   = %q{Ovirt provides a simple Object Oriented interface to the REST API of oVirt and RHEV-M servers.}
+  spec.summary       = %q{Ovirt provides a simple Object Oriented interface to the REST API of oVirt and RHEV-M servers.}
   spec.homepage      = "http://github.com/ManageIQ/ovirt"
-  spec.license       = "MIT"
+  spec.license       = "Apache"
 
-  spec.files         = `git ls-files`.split($/)
-  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
-  spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
+
+  spec.files         = `git ls-files -- lib/*`.split("\n")
+  spec.files        += %w[README.md LICENSE.txt]
+  spec.executables   = `git ls-files -- bin/*`.split("\n")
+  spec.test_files    = `git ls-files -- spec/*`.split("\n")
+  spec.test_files   += %w[.rspec]
   spec.require_paths = ["lib"]
 
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"
-  spec.add_development_dependency "rspec",    "~> 2.13"
+  spec.add_development_dependency "rspec",   "~> 2.13"
   spec.add_development_dependency "coveralls"
 
+  spec.add_dependency "activesupport"
   spec.add_dependency "more_core_extensions"
   spec.add_dependency "nokogiri"
+  spec.add_dependency "parallel"
+  spec.add_dependency "rest-client", "~>1.6.7"
 end
