@@ -15,10 +15,10 @@ RSpec.configure do |config|
   config.order = 'random'
 end
 
-require 'ovirt'
-
 begin
   require 'coveralls'
   Coveralls.wear!
 rescue LoadError
 end
+
+require 'ovirt'
