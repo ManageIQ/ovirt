@@ -1,5 +1,5 @@
 module Ovirt
-  class Role < Object
+  class Role < Base
 
     self.top_level_strings  = [:name, :description]
     self.top_level_booleans = [:administrative, :mutable]

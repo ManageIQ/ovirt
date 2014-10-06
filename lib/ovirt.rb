@@ -2,7 +2,7 @@ require 'active_support/all'
 require 'more_core_extensions/all'
 
 require 'ovirt/exception'
-require 'ovirt/object'
+require 'ovirt/base'
 require 'ovirt/version'
 
 require 'ovirt/api'

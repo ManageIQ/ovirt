@@ -1,5 +1,5 @@
 module Ovirt
-  class Permission < Object
+  class Permission < Base
 
     self.top_level_objects  = [:role, :user]
 

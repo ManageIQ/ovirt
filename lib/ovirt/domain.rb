@@ -1,5 +1,5 @@
 module Ovirt
-  class Domain < Object
+  class Domain < Base
 
     self.top_level_strings  = [:name]
 

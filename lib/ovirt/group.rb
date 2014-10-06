@@ -1,5 +1,5 @@
 module Ovirt
-  class Group < Object
+  class Group < Base
 
     self.top_level_strings = [:name]
 

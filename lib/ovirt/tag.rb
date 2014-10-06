@@ -1,5 +1,5 @@
 module Ovirt
-  class Tag < Object
+  class Tag < Base
 
     self.top_level_strings = [:name, :description]
     self.top_level_objects = [:host, :user, :vm]

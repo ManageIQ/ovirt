@@ -1,5 +1,5 @@
 module Ovirt
-  class DataCenter < Object
+  class DataCenter < Base
 
     self.top_level_strings  = [:name, :description, :storage_type, :storage_format]
 

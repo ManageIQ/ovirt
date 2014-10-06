@@ -1,5 +1,5 @@
 module Ovirt
-  class Event < Object
+  class Event < Base
 
     self.top_level_strings    = [:description, :severity]
     self.top_level_integers   = [:code]

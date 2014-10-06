@@ -1,5 +1,5 @@
 module Ovirt
-  class Snapshot < Object
+  class Snapshot < Base
 
     self.top_level_strings    = [:description, :snapshot_status, :type]
     self.top_level_timestamps = [:date]

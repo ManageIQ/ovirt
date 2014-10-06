@@ -1,5 +1,5 @@
 module Ovirt
-  class Nic < Object
+  class Nic < Base
 
     self.top_level_strings  = [:name, :interface]
     self.top_level_objects  = [:vm, :network]

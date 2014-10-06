@@ -1,17 +1,17 @@
 require_relative './example_helper'
 
-def print_object(object, caption, indent = 0, recurse = true)
+def print_object(base, caption, indent = 0, recurse = true)
   indentation = "\t" * indent
   puts "#{indentation}================= #{caption} ======================"
-  object.keys.sort { |a,b| a.to_s <=> b.to_s }.each do |key|
-    puts "#{indentation}#{key.to_s}:\t#{object[key].inspect}"
+  base.keys.sort { |a,b| a.to_s <=> b.to_s }.each do |key|
+    puts "#{indentation}#{key.to_s}:\t#{base[key].inspect}"
   end
-  puts "#{indentation}relationships:\t#{object.relationships.inspect}"
-  puts "#{indentation}operations:\t#{object.operations.inspect}"
+  puts "#{indentation}relationships:\t#{base.relationships.inspect}"
+  puts "#{indentation}operations:\t#{base.operations.inspect}"
 
   if recurse
-    object.relationships.keys.sort { |a,b| a.to_s <=> b.to_s}.each do |rel|
-      object.send(rel).each { |obj| print_object(obj, rel.to_s.singularize.upcase, indent+1) }
+    base.relationships.keys.sort { |a,b| a.to_s <=> b.to_s}.each do |rel|
+      base.send(rel).each { |obj| print_object(obj, rel.to_s.singularize.upcase, indent+1) }
     end
   end
 end

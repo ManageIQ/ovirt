@@ -1,5 +1,5 @@
 module Ovirt
-  class Object
+  class Base
     def self.create_from_xml(service, xml)
       self.new(service, parse_xml(xml))
     end
@@ -173,7 +173,7 @@ module Ovirt
 
     def self.object_to_id(object)
       case object
-      when Ovirt::Object
+      when Ovirt::Base
         object = object[:id]
       when String
         raise ArgumentError, "object must be a valid guid" unless object.guid?
