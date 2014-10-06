@@ -1,5 +1,5 @@
 module Ovirt
-  class Template < Object
+  class Template < Base
 
     self.top_level_strings    = [:name, :description, :type]
     self.top_level_booleans   = [:stateless]
@@ -88,7 +88,7 @@ module Ovirt
     def create_vm(options = {})
       options = options.dup
       determine_clone_type(options)
-      options[:storage] = Object.object_to_id(options[:storage]) if options[:storage]
+      options[:storage] = Base.object_to_id(options[:storage]) if options[:storage]
 
       case options[:clone_type]
       when :full;     clone_to_vm(options)
@@ -147,7 +147,7 @@ module Ovirt
       builder = Nokogiri::XML::Builder.new do |xml|
         xml.vm do
           xml.name options[:name]
-          xml.cluster(:id => Object.object_to_id(options[:cluster]))
+          xml.cluster(:id => Base.object_to_id(options[:cluster]))
           xml.template(:id => self[:id])
 
           CLONE_ATTRIBUTES_WITH_SCALARS.each do |key|

@@ -1,5 +1,5 @@
 module Ovirt
-  class Disk < Object
+  class Disk < Base
 
     self.top_level_strings  = [:name, :type, :interface, :format, :image_id]
     self.top_level_booleans = [:sparse, :bootable, :wipe_after_delete, :propagate_errors]

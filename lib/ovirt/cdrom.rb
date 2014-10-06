@@ -1,5 +1,5 @@
 module Ovirt
-  class Cdrom < Object
+  class Cdrom < Base
 
     self.top_level_objects  = [:vm, :file]
 

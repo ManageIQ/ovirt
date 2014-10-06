@@ -1,5 +1,5 @@
 module Ovirt
-  class Statistic < Object
+  class Statistic < Base
 
     self.top_level_strings    = [:name, :description, :type, :unit]
 

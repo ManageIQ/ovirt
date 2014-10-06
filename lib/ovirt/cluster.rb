@@ -1,5 +1,5 @@
 module Ovirt
-  class Cluster < Object
+  class Cluster < Base
 
     self.top_level_strings  = [:name, :description]
     self.top_level_objects  = [:data_center, :scheduling_policy]

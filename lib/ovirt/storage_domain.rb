@@ -1,5 +1,5 @@
 module Ovirt
-  class StorageDomain < Object
+  class StorageDomain < Base
 
     self.top_level_strings    = [:name, :type, :storage_format]
     self.top_level_booleans   = [:master]

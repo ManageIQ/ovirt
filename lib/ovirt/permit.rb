@@ -1,5 +1,5 @@
 module Ovirt
-  class Permit < Object
+  class Permit < Base
 
     self.top_level_strings  = [:name]
     self.top_level_booleans = [:administrative]

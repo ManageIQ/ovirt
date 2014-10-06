@@ -1,5 +1,5 @@
 module Ovirt
-  class HostNic < Object
+  class HostNic < Base
 
     self.top_level_strings  = [:name, :boot_protocol]
     self.top_level_integers = [:speed]

@@ -1,5 +1,5 @@
 module Ovirt
-  class Storage < Object
+  class Storage < Base
 
     self.top_level_objects  = [:host]
 

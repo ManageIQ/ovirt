@@ -1,5 +1,5 @@
 module Ovirt
-  class User < Object
+  class User < Base
 
     self.top_level_strings  = [:name, :description, :domain, :user_name]
     self.top_level_booleans = [:logged_in]

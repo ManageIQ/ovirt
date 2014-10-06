@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Ovirt::Object do
+describe Ovirt::Base do
   it ".api_endpoint" do
-    Ovirt::Object.api_endpoint.should        == "objects"
+    Ovirt::Base.api_endpoint.should          == "bases"
     Ovirt::Template.api_endpoint.should      == "templates"
     Ovirt::Cluster.api_endpoint.should       == "clusters"
     Ovirt::Vm.api_endpoint.should            == "vms"

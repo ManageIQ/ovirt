@@ -120,7 +120,7 @@ module Ovirt
     def status(link)
       response = resource_get(link)
 
-      node = Object.xml_to_nokogiri(response)
+      node = Base.xml_to_nokogiri(response)
       node.xpath('status/state').text
     end
 

@@ -1,5 +1,5 @@
 module Ovirt
-  class Network < Object
+  class Network < Base
 
     self.top_level_strings  = [:name, :description]
     self.top_level_booleans = [:stp, :display]

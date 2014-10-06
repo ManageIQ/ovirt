@@ -127,7 +127,7 @@ EOX
 
     context "build_clone_xml" do
       it "Properly sets vm/cpu/topology attributes" do
-        Object.stub(:object_to_id)
+        Ovirt::Base.stub(:object_to_id)
         xml     = @template.send(:build_clone_xml, :name => "Blank", :cluster => "6b8f1c1e-3eb0-11e4-8420-56847afe9799")
         nodeset = Nokogiri::XML.parse(xml).xpath("//vm/cpu/topology")
         node    = nodeset.first

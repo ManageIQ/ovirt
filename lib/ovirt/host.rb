@@ -1,5 +1,5 @@
 module Ovirt
-  class Host < Object
+  class Host < Base
 
     self.top_level_strings    = [:name, :type, :address]
     self.top_level_integers   = [:port]

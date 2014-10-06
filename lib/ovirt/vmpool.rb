@@ -1,5 +1,5 @@
 module Ovirt
-  class Vmpool < Object
+  class Vmpool < Base
 
     self.top_level_strings    = [:name, :description]
     self.top_level_integers   = [:size]
