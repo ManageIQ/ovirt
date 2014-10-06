@@ -252,7 +252,7 @@ module Ovirt
         rel_str        = 'storage_domains' if rel_str == 'storagedomains'
         rel_str        = 'data_centers'    if rel_str == 'datacenters'
         singular       = rel_str.singularize
-        klass          = singular.camelize.constantize
+        klass          = Ovirt.const_get(singular.camelize)
         xml            = @service.resource_get(@relationships[m])
         doc            = Nokogiri::XML(xml)
         return doc.root.xpath(singular).collect { |node| klass.create_from_xml(@service, node) }
