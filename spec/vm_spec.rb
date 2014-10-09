@@ -186,4 +186,76 @@ EOX
       expect { @vm.stop }.to raise_error Ovirt::VmIsNotRunning
     end
   end
+
+  context "payloads" do
+    skip "attach" do
+    end
+
+    context "detach floppy" do
+      it "Ovirt 3.0 should set empty payload" do
+        expected_data = <<-EOX.chomp
+<vm>
+  <payloads>
+    <payload type="floppy"/>
+  </payloads>
+</vm>
+EOX
+        return_data = <<-EOX.chomp
+<vm href="/api/vms/128f9ffd-b82c-41e4-8c00-9742ed173bac" id="128f9ffd-b82c-41e4-8c00-9742ed173bac">
+  <name>bd-skeletal-clone-from-template</name>
+  <cpu>
+    <topology sockets="1" cores="1"/>
+  </cpu>
+  <os type="rhel_6x64">
+    <boot dev="hd"/>
+  </os>
+  <payloads>
+    <payload type="floppy"/>
+  </payloads>
+  <placement_policy>
+    <host id="a3abe9ed-fa52-4a7f-8a9b-1eebc782781f"/>
+    <affinity>migratable</affinity>
+  </placement_policy>
+  <memory_policy>
+    <guaranteed>1073741824</guaranteed>
+    <ballooning>true</ballooning>
+  </memory_policy>
+</vm>
+EOX
+        @service.should_receive(:version).twice.and_return(:major=>"3", :minor=>"0", :build=>"0", :revision=>"0")
+        @service.should_receive(:resource_put).once.with(@vm.attributes[:href], expected_data).and_return(return_data)
+        @vm.detach_floppy
+      end
+
+      it "Ovirt 3.3 should remove payload" do
+        expected_data = <<-EOX.chomp
+<vm>
+  <payloads/>
+</vm>
+EOX
+        return_data = <<-EOX.chomp
+<vm href="/api/vms/128f9ffd-b82c-41e4-8c00-9742ed173bac" id="128f9ffd-b82c-41e4-8c00-9742ed173bac">
+  <name>bd-skeletal-clone-from-template</name>
+  <cpu>
+    <topology sockets="1" cores="1"/>
+  </cpu>
+  <os type="rhel_6x64">
+    <boot dev="hd"/>
+  </os>
+  <placement_policy>
+    <host id="a3abe9ed-fa52-4a7f-8a9b-1eebc782781f"/>
+    <affinity>migratable</affinity>
+  </placement_policy>
+  <memory_policy>
+    <guaranteed>1073741824</guaranteed>
+    <ballooning>true</ballooning>
+  </memory_policy>
+</vm>
+EOX
+        @service.should_receive(:version).and_return(:major=>"3", :minor=>"3", :build=>"0", :revision=>"0")
+        @service.should_receive(:resource_put).once.with(@vm.attributes[:href], expected_data).and_return(return_data)
+        @vm.detach_floppy
+      end
+    end
+  end
 end

@@ -180,11 +180,21 @@ module Ovirt
     # types:: A payload type or Array of payload types to detach.
     #         Acceptable types are floppy or cdrom.
     def detach_payload(types)
+      send("detach_payload_#{payload_version}".to_sym, Array(types))
+    end
+
+    def detach_payload_3_0(types)
       # HACK: The removal of payloads is not supported until possibly RHEVM 3.1.1
       #       https://bugzilla.redhat.com/show_bug.cgi?id=882649
       #       For now, just set the payload to blank content.
-      payload = Array(types).each_with_object({}) { |t, h| h[t] = {} }
+      payload = types.each_with_object({}) { |t, h| h[t] = {} }
       attach_payload(payload)
+    end
+
+    def detach_payload_3_3(types)
+      update! do |xml|
+        xml.payloads
+      end
     end
 
     # Attaches the +files+ as a floppy drive payload.
