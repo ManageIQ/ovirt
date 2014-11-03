@@ -250,7 +250,7 @@ module Ovirt
 
     def resource_options
       headers = merge_headers({ 'Prefer' => 'persistent-auth' })
-      options = { :ssl_version => :SSLv3 }
+      options = { :ssl_version => 'TLSv1' }
 
       if self.session_id
         headers[:cookie]     = "#{SESSION_ID_KEY}=#{self.session_id}"
