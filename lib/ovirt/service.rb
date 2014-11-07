@@ -262,6 +262,7 @@ module Ovirt
       options[:headers]      = headers
       options[:timeout]      = timeout      if timeout
       options[:open_timeout] = open_timeout if open_timeout
+      options[:verify_ssl]   = verify_ssl   unless verify_ssl.nil?
       options
     end
 
@@ -315,6 +316,10 @@ module Ovirt
 
     def open_timeout
       @options[:open_timeout]   # NetHTTPSessions's open_timeout
+    end
+
+    def verify_ssl
+      @options[:verify_ssl]
     end
 
     # Parse domain out of the username string
