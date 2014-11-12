@@ -168,20 +168,20 @@ module Ovirt
     end
 
     def self.href_to_guid(href)
-      href.split("/").last
+      href = href.to_s.split("/").last
+      href.guid? ? href : raise(ArgumentError, "href must contain a valid guid")
     end
+    private_class_method :href_to_guid
 
     def self.object_to_id(object)
       case object
       when Ovirt::Base
-        object = object[:id]
+        object[:id]
       when String
-        raise ArgumentError, "object must be a valid guid" unless object.guid?
-        object = href_to_guid(object)
+        href_to_guid(object)
       else
         raise ArgumentError, "object must be a valid guid or an Ovirt Object"
       end
-      object
     end
 
     def self.api_endpoint
