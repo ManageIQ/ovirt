@@ -241,11 +241,10 @@ module Ovirt
     end
 
     def base_uri
-      if port.blank?
-        "#{scheme}://#{server}"
-      else
-        "#{scheme}://#{server}:#{port}"
-      end
+      require 'uri'
+      uri = URI::Generic.build(:scheme => scheme.to_s, :port => port)
+      uri.hostname = server
+      uri.to_s
     end
 
     def resource_options
