@@ -102,9 +102,9 @@ module Ovirt
       xml_to_object(klass, doc.root)
     end
 
-    def standard_collection(uri_suffix, element_name = nil, paginate=false, sort_by=:name)
+    def standard_collection(uri_suffix, element_name = nil, paginate = false, sort_by = :name, direction = :asc)
       if paginate
-        doc = paginate_resource_get(uri_suffix, sort_by)
+        doc = paginate_resource_get(uri_suffix, sort_by, direction)
       else
         xml = resource_get(uri_suffix)
         doc = Nokogiri::XML(xml)
