@@ -26,11 +26,13 @@ module Ovirt
       standard_collection("domains")
     end
 
-    def events(since = nil)
-      if since.nil?
-        standard_collection("events")
+    def events(options = {})
+      if options[:since]
+        standard_collection("events?from=#{options[:since]}", "event")
+      elsif options[:max]
+        standard_collection("events;max=#{options[:max]}", "event", false, "time", :desc)
       else
-        standard_collection("events?from=#{since}", "event")
+        standard_collection("events")
       end
     end
 
@@ -94,8 +96,8 @@ module Ovirt
 
     private
 
-    def standard_collection(uri_suffix, element_name = nil, paginate=false, sort_by=:name)
-      @service.standard_collection(uri_suffix, element_name, paginate, sort_by)
+    def standard_collection(uri_suffix, element_name = nil, paginate = false, sort_by = :name, direction = :asc)
+      @service.standard_collection(uri_suffix, element_name, paginate, sort_by, direction)
     end
 
     # TODO: Remove this key/method translation and just use the method name as
