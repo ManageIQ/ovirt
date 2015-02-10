@@ -248,19 +248,14 @@ module Ovirt
 
     def method_missing(m, *args)
       if @relationships.has_key?(m)
-        rel_str        = m.to_s
-        rel_str        = 'storage_domains' if rel_str == 'storagedomains'
-        rel_str        = 'data_centers'    if rel_str == 'datacenters'
-        singular       = rel_str.singularize
-        klass          = Ovirt.const_get(singular.camelize)
-        xml            = @service.resource_get(@relationships[m])
-        doc            = Nokogiri::XML(xml)
-        return doc.root.xpath(singular).collect { |node| klass.create_from_xml(@service, node) }
+        relationship(m)
+      elsif @operations.has_key?(m)
+        operation(m, args)
+      elsif @attributes.has_key?(m)
+        @attributes[m]
+      else
+        super
       end
-
-      return operation(m, args) if @operations.has_key?(m)
-
-      super
     end
 
     def operation(method, *args)
@@ -273,6 +268,21 @@ module Ovirt
         @service.resource_post(@operations[method.to_sym], data)
       else
         raise "Method:<#{method}> is not available for object <#{self.class.name}>"
+      end
+    end
+
+    def relationship(rel)
+      if @relationships.has_key?(rel.to_sym)
+        rel_str  = rel.to_s
+        rel_str  = 'storage_domains' if rel_str == 'storagedomains'
+        rel_str  = 'data_centers'    if rel_str == 'datacenters'
+        singular = rel_str.singularize
+        klass    = Ovirt.const_get(singular.camelize)
+        xml      = @service.resource_get(@relationships[rel])
+        doc      = Nokogiri::XML(xml)
+        doc.root.xpath(singular).collect { |node| klass.create_from_xml(@service, node) }
+      else
+        raise "Relationship:<#{rel}> is not available for object <#{self.class.name}>"
       end
     end
 
