@@ -77,6 +77,10 @@ module Ovirt
       end
     end
 
+    def self.has_first_node?(node, path)
+      node.xpath(path.to_s).first.present?
+    end
+
     def self.top_level_objects=(keys)
       @top_level_objects = keys
     end
