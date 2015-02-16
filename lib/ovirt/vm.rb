@@ -1,6 +1,5 @@
 module Ovirt
   class Vm < Template
-
     self.top_level_strings    = [:name, :origin, :type, :description]
     self.top_level_booleans   = [:stateless]
     self.top_level_integers   = [:memory]

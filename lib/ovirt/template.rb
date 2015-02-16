@@ -1,15 +1,12 @@
 module Ovirt
   class Template < Base
-
     self.top_level_strings    = [:name, :description, :type]
     self.top_level_booleans   = [:stateless]
     self.top_level_integers   = [:memory]
     self.top_level_timestamps = [:creation_time]
     self.top_level_objects    = [:cluster]
 
-    def self.parse_xml(xml)
-      node, hash = xml_to_hash(xml)
-
+    def self.parse_node_extended(node, hash)
       parse_first_node(node, :status, hash, :node => [:state])
 
       parse_first_node(node, :display, hash,
@@ -41,9 +38,6 @@ module Ovirt
       node.xpath('custom_properties/custom_property').each do |ca|
         hash[:custom_attributes] << {:name => ca[:name], :value => ca[:value]}
       end
-
-
-      hash
     end
 
     def os_type

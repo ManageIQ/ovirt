@@ -1,15 +1,12 @@
 module Ovirt
   class Event < Base
-
     self.top_level_strings    = [:description, :severity]
     self.top_level_integers   = [:code]
     self.top_level_timestamps = [:time]
     self.top_level_objects    = [:cdrom, :cluster, :data_center, :disk, :domain, :file, :group, :host, :host_nic, :network, :nic, :permission, :permit, :role, :snapshot, :storage, :storage_domain, :tag, :template, :user, :vm, :vmpool]
 
-    def self.parse_xml(xml)
-      node, hash = xml_to_hash(xml)
+    def self.parse_node_extended(_node, hash)
       set_event_name(hash)
-      hash
     end
 
     def self.set_event_name(hash)
