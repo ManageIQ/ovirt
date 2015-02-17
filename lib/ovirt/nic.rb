@@ -1,16 +1,11 @@
 module Ovirt
   class Nic < Base
+    self.top_level_strings = [:name, :interface]
+    self.top_level_objects = [:vm, :network]
 
-    self.top_level_strings  = [:name, :interface]
-    self.top_level_objects  = [:vm, :network]
-
-    def self.parse_xml(xml)
-      node, hash     = xml_to_hash(xml)
-
+    def self.parse_node_extended(node, hash)
       parse_first_node(node, :network, hash, :node      => [:name])
       parse_first_node(node, :mac,     hash, :attribute => [:address])
-
-      hash
     end
 
     def attributes_for_new_nic

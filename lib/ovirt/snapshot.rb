@@ -1,15 +1,8 @@
 module Ovirt
   class Snapshot < Base
-
     self.top_level_strings    = [:description, :snapshot_status, :type]
     self.top_level_timestamps = [:date]
     self.top_level_objects    = [:vm]
-
-    def self.parse_xml(xml)
-      node, hash = xml_to_hash(xml)
-
-      hash
-    end
 
     def initialize(service, options = {})
       super

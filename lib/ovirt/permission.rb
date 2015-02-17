@@ -1,11 +1,8 @@
 module Ovirt
   class Permission < Base
+    self.top_level_objects = [:role, :user]
 
-    self.top_level_objects  = [:role, :user]
-
-    def self.parse_xml(xml)
-      node, hash = xml_to_hash(xml)
-
+    def self.parse_node_extended(node, hash)
       [:template].each do |type|
         subject_node = node.xpath(type.to_s).first
         next if subject_node.nil?
@@ -13,8 +10,6 @@ module Ovirt
         subject[:type] = type
         hash[:subject] = subject
       end
-
-      hash
     end
   end
 end

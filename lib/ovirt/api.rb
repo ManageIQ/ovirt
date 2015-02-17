@@ -1,9 +1,6 @@
 module Ovirt
   class Api < Base
-
-    def self.parse_xml(xml)
-      node, hash                      = xml_to_hash(xml)
-
+    def self.parse_node_extended(node, hash)
       parse_first_node(node, :product_info, hash,
                        :node         => [:name, :vendor])
 
@@ -24,8 +21,6 @@ module Ovirt
 
       # There should not be any actions defined on the api
       hash.delete(:actions) if hash[:actions].empty?
-
-      hash
     end
   end
 end

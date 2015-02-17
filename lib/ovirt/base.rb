@@ -121,6 +121,11 @@ module Ovirt
       @top_level_timestamps ||= []
     end
 
+    def self.parse_xml(xml)
+      node, hash = xml_to_hash(xml)
+      parse_node_extended(node, hash) if respond_to?(:parse_node_extended)
+      hash
+    end
 
     def self.xml_to_hash(xml)
       node                          = xml_to_nokogiri(xml)

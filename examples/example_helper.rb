@@ -9,13 +9,18 @@ module ExampleHelper
   USERNAME = raise "please define USERNAME"
   PASSWORD = raise "please define PASSWORD"
 
+  def self.service_attributes
+    {
+      :server     => SERVER,
+      :port       => PORT,
+      :domain     => DOMAIN,
+      :username   => USERNAME,
+      :password   => PASSWORD,
+      :verify_ssl => false
+    }
+  end
+
   def self.service
-    Ovirt::Service.new(
-      :server   => SERVER,
-      :port     => PORT,
-      :domain   => DOMAIN,
-      :username => USERNAME,
-      :password => PASSWORD
-    )
+    Ovirt::Service.new(service_attributes)
   end
 end

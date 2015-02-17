@@ -1,18 +1,15 @@
 module Ovirt
   class StorageDomain < Base
-
-    self.top_level_strings    = [:name, :type, :storage_format]
-    self.top_level_booleans   = [:master]
-    self.top_level_integers   = [:available, :used, :committed]
-    self.top_level_objects    = [:data_center]
+    self.top_level_strings  = [:name, :type, :storage_format]
+    self.top_level_booleans = [:master]
+    self.top_level_integers = [:available, :used, :committed]
+    self.top_level_objects  = [:data_center]
 
     def self.element_name
       "storage_domain"
     end
 
-    def self.parse_xml(xml)
-      node, hash = xml_to_hash(xml)
-
+    def self.parse_node_extended(node, hash)
       parse_first_node(node, :status,  hash, :node => [:state])
       parse_first_node(node, :storage, hash, :node => [:type, :address, :path])
       parse_first_node(node, :storage, hash, :attribute => [:id])
@@ -32,8 +29,6 @@ module Ovirt
           end
         end
       end
-
-      hash
     end
 
     def self.iso_storage_domain(service)

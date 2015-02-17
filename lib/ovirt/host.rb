@@ -1,14 +1,11 @@
 module Ovirt
   class Host < Base
+    self.top_level_strings  = [:name, :type, :address]
+    self.top_level_integers = [:port, :memory, :max_scheduling_memory]
+    self.top_level_booleans = [:storage_manager]
+    self.top_level_objects  = [:cluster]
 
-    self.top_level_strings    = [:name, :type, :address]
-    self.top_level_integers   = [:port, :memory, :max_scheduling_memory]
-    self.top_level_booleans   = [:storage_manager]
-    self.top_level_objects    = [:cluster]
-
-    def self.parse_xml(xml)
-      node, hash                      = xml_to_hash(xml)
-
+    def self.parse_node_extended(node, hash)
       hash[:relationships][:host_nics] = hash[:relationships].delete(:nics)
 
       parse_first_node(node, :certificate, hash,
@@ -62,8 +59,6 @@ module Ovirt
 
       parse_first_node(node, :libvirt_version, hash,
                        :attribute => [:major, :minor, :build, :revision, :full_version])
-
-      hash
     end
   end
 end

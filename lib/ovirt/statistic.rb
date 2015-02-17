@@ -1,11 +1,8 @@
 module Ovirt
   class Statistic < Base
+    self.top_level_strings = [:name, :description, :type, :unit]
 
-    self.top_level_strings    = [:name, :description, :type, :unit]
-
-    def self.parse_xml(xml)
-      node, hash = xml_to_hash(xml)
-
+    def self.parse_node_extended(node, hash)
       values               = []
       values_node          = node.xpath('values').first
       values_type          = values_node['type']
@@ -30,8 +27,6 @@ module Ovirt
         parent[:type] = type
         hash[:parent] = parent
       end
-
-      hash
     end
   end
 end

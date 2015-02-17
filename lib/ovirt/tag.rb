@@ -1,12 +1,9 @@
 module Ovirt
   class Tag < Base
-
     self.top_level_strings = [:name, :description]
     self.top_level_objects = [:host, :user, :vm]
 
-    def self.parse_xml(xml)
-      node, hash = xml_to_hash(xml)
-
+    def self.parse_node_extended(node, hash)
       parent_node = node.xpath('parent').first
       unless parent_node.nil?
         tag_node = parent_node.xpath('tag').first
@@ -16,8 +13,6 @@ module Ovirt
           hash[:parent] = parent
         end
       end
-
-      hash
     end
   end
 end
