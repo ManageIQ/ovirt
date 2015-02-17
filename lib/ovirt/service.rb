@@ -135,6 +135,18 @@ module Ovirt
       uri
     end
 
+    def self.ovirt?(options)
+      options[:username] = options[:password] = "_unused"
+      !self.new(options).engine_ssh_public_key.to_s.blank?
+    rescue RestClient::ResourceNotFound
+      false
+    end
+
+    def engine_ssh_public_key
+      require "rest-client"
+      RestClient::Resource.new("#{base_uri}/engine.ssh.key.txt", resource_options).get
+    end
+
     def paginate_resource_get(path = nil, sort_by=:name, direction=:asc)
       log_header = "#{self.class.name}#paginate_resource_get"
       page = 1
