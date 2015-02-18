@@ -11,7 +11,7 @@ module Ovirt
 
       parse_first_node(node, :display, hash,
                        :node      => [:type, :address],
-                       :node_to_i => [:port, :monitors])
+                       :node_to_i => [:port, :monitors, :secure_port])
 
       parse_first_node(node, :usb, hash,
                        :node_to_bool => [:enabled])
