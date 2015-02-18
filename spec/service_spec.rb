@@ -28,6 +28,25 @@ EOX
     end
   end
 
+  context ".ovirt?" do
+    it "false when ResourceNotFound" do
+      described_class.any_instance.should_receive(:engine_ssh_public_key).and_raise(RestClient::ResourceNotFound)
+      described_class.ovirt?(:server => "127.0.0.1").should be false
+    end
+
+    it "true when key non-empty" do
+      fake_key = "ssh-rsa " + ("A" * 372) + " ovirt-engine\n"
+      described_class.any_instance.should_receive(:engine_ssh_public_key).and_return(fake_key)
+      described_class.ovirt?(:server => "127.0.0.1").should be true
+    end
+
+    it "false when key empty" do
+      fake_key = "\n"
+      described_class.any_instance.should_receive(:engine_ssh_public_key).and_return(fake_key)
+      described_class.ovirt?(:server => "127.0.0.1").should be false
+    end
+  end
+
   context "#base_uri" do
     let(:defaults) { {:username => nil, :password => nil}}
     subject { described_class.new(defaults.merge(@options)).send(:base_uri) }
