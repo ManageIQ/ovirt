@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<node href="/api/1" id="1">
+	<actions>
+		<link href="/api/1/action" rel="action"/>
+	</actions>
+	<link href="/api/1/relationship" rel="relationship"/>
+	<string>string</string>
+	<integer>1</integer>
+	<bool_true>true</bool_true>
+	<bool_false>false</bool_false>
+	<attrs attr_string="string" attr_integer="1" attr_bool_true="true" attr_bool_false="false"/>
+	<nodes>
+		<string>string</string>
+		<integer>1</integer>
+		<bool_true>true</bool_true>
+		<bool_false>false</bool_false>
+		<attrs attr_string="string" attr_integer="1" attr_bool_true="true" attr_bool_false="false"/>
+	</nodes>
+	<node_with_attrs attr_integer="1">
+		<string>string</string>
+	</node_with_attrs>
+	<attrs_with_value attr_integer="1">string</attrs_with_value>
+	<node_with_nesting>
+		<subnode>
+			<string>string</string>
+		</subnode>
+	</node_with_nesting>
+	<node_with_array>
+		<subnodes>
+			<subnode>string1</subnode>
+			<subnode>string2</subnode>
+			<subnode>string3</subnode>
+		</subnodes>
+	</node_with_array>
+	<object href="/api/2" id="2"/>
+	<version major="1" minor="2" build="3" revision="4" full_version="1.2.3.4-alpha1"/>
+</node>
