@@ -1,9 +1,10 @@
 require 'active_support/all'
 require 'more_core_extensions/all'
 
-require 'ovirt/exception'
-require 'ovirt/base'
 require 'ovirt/version'
+require 'ovirt/exception'
+require 'ovirt/parser'
+require 'ovirt/base'
 
 require 'ovirt/api'
 require 'ovirt/cdrom'

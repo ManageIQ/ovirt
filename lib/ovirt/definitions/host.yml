@@ -1,0 +1,71 @@
+---
+name: string
+address: string
+certificate:
+  nodes:
+    organization: string
+    subject: string
+status:
+  nodes:
+    state: string
+cluster: object
+port: integer
+type: string
+storage_manager: boolean
+# storage_manager:
+#   type: boolean
+#   attributes:
+#     priority: integer
+version: version
+hardware_information:
+  nodes:
+    manufacturer: string
+    version: string
+    serial_number: string
+    product_name: string
+    uuid: string
+    family: string
+power_management:
+  attributes:
+    type: string
+  nodes:
+    enabled: boolean
+    options: array
+    automatic_pm_enabled: boolean
+ksm:
+  nodes:
+    enabled: boolean
+transparent_hugepages:
+  nodes:
+    enabled: boolean
+iscsi:
+  nodes:
+    initiator: string
+ssh:
+  nodes:
+    port: integer
+    fingerprint: string
+cpu:
+  nodes:
+    name: string
+    speed: integer
+    topology:
+      attributes:
+        sockets: integer
+        cores: integer
+        threads: integer
+memory: integer
+max_scheduling_memory: integer
+summary:
+  nodes:
+    active: integer
+    migrating: integer
+    total: integer
+os:
+  attributes:
+    type: string
+  nodes:
+    version:
+      attributes:
+        full_version: string
+libvirt_version: version

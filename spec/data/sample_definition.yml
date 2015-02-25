@@ -1,0 +1,45 @@
+---
+string: string
+integer: integer
+bool_true: boolean
+bool_false: boolean
+missing: string
+attrs:
+  attributes:
+    attr_string: string
+    attr_integer: integer
+    attr_bool_true: boolean
+    attr_bool_false: boolean
+    missing: string
+nodes:
+  nodes:
+    string: string
+    integer: integer
+    bool_true: boolean
+    bool_false: boolean
+    missing: string
+    attrs:
+      attributes:
+        attr_string: string
+        attr_integer: integer
+        attr_bool_true: boolean
+        attr_bool_false: boolean
+node_with_attrs:
+  attributes:
+    attr_integer: integer
+  nodes:
+    string: string
+attrs_with_value:
+  type: string
+  attributes:
+    attr_integer: integer
+node_with_nesting:
+  nodes:
+    subnode:
+      nodes:
+        string: string
+node_with_array:
+  nodes:
+    subnodes: array
+object: object
+version: version

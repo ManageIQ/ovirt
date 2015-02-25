@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<host href="/api/hosts/bf7683bf-57d7-495d-b17a-91d0bf1daa0d" id="bf7683bf-57d7-495d-b17a-91d0bf1daa0d">
+	<actions>
+		<link href="/api/hosts/bf7683bf-57d7-495d-b17a-91d0bf1daa0d/deactivate" rel="deactivate"/>
+		<link href="/api/hosts/bf7683bf-57d7-495d-b17a-91d0bf1daa0d/fence" rel="fence"/>
+		<link href="/api/hosts/bf7683bf-57d7-495d-b17a-91d0bf1daa0d/install" rel="install"/>
+		<link href="/api/hosts/bf7683bf-57d7-495d-b17a-91d0bf1daa0d/activate" rel="activate"/>
+		<link href="/api/hosts/bf7683bf-57d7-495d-b17a-91d0bf1daa0d/iscsidiscover" rel="iscsidiscover"/>
+		<link href="/api/hosts/bf7683bf-57d7-495d-b17a-91d0bf1daa0d/commitnetconfig" rel="commitnetconfig"/>
+		<link href="/api/hosts/bf7683bf-57d7-495d-b17a-91d0bf1daa0d/approve" rel="approve"/>
+		<link href="/api/hosts/bf7683bf-57d7-495d-b17a-91d0bf1daa0d/iscsilogin" rel="iscsilogin"/>
+	</actions>
+	<name>rhev_3_1_host</name>
+	<link href="/api/hosts/bf7683bf-57d7-495d-b17a-91d0bf1daa0d/storage" rel="storage"/>
+	<link href="/api/hosts/bf7683bf-57d7-495d-b17a-91d0bf1daa0d/nics" rel="nics"/>
+	<link href="/api/hosts/bf7683bf-57d7-495d-b17a-91d0bf1daa0d/tags" rel="tags"/>
+	<link href="/api/hosts/bf7683bf-57d7-495d-b17a-91d0bf1daa0d/permissions" rel="permissions"/>
+	<link href="/api/hosts/bf7683bf-57d7-495d-b17a-91d0bf1daa0d/statistics" rel="statistics"/>
+	<address>1.2.3.4</address>
+	<certificate>
+		<organization>example.com</organization>
+		<subject>O=example.com,CN=1.2.3.4</subject>
+	</certificate>
+	<status>
+		<state>non_responsive</state>
+	</status>
+	<cluster href="/api/clusters/12dd4eab-6050-496e-a5a3-b93e92346797" id="12dd4eab-6050-496e-a5a3-b93e92346797"/>
+	<port>54321</port>
+	<type>rhel</type>
+	<storage_manager priority="5">true</storage_manager>
+	<power_management>
+		<enabled>false</enabled>
+		<options>
+			<option name="port" value=""/>
+			<option name="secure" value="false"/>
+		</options>
+	</power_management>
+	<ksm>
+		<enabled>false</enabled>
+	</ksm>
+	<transparent_hugepages>
+		<enabled>true</enabled>
+	</transparent_hugepages>
+	<iscsi>
+		<initiator>iqn.1994-05.com.example:6a7a1474bebf</initiator>
+	</iscsi>
+	<cpu>
+		<topology sockets="2" cores="4"/>
+		<name>Intel(R) Xeon(R) CPU E5504 @ 2.00GHz</name>
+		<speed>1995</speed>
+	</cpu>
+	<memory>59069431808</memory>
+	<max_scheduling_memory>85995814912</max_scheduling_memory>
+	<summary>
+		<active>2</active>
+		<migrating>0</migrating>
+		<total>2</total>
+	</summary>
+</host>

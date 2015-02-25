@@ -1,7 +1,16 @@
+require 'yaml'
+
 module Ovirt
   class Base
     def self.create_from_xml(service, xml)
       self.new(service, parse_xml(xml))
+    end
+
+    def self.definition
+      return @definition if defined?(@defintion)
+      file = "#{name.split("::").last.underscore}.yml"
+      file = ::File.join(__dir__, "definitions", file)
+      @definition = ::File.exist?(file) ? YAML.load_file(file) : nil
     end
 
     def self.xml_to_relationships(xml)
@@ -122,7 +131,13 @@ module Ovirt
     end
 
     def self.parse_xml(xml)
-      node, hash = xml_to_hash(xml)
+      # TODO: Temporary shim until all classes are moved to the new definitions
+      if definition
+        node = xml_to_nokogiri(xml)
+        hash = Parser.new(definition).parse(node)
+      else
+        node, hash = xml_to_hash(xml)
+      end
       parse_node_extended(node, hash) if respond_to?(:parse_node_extended)
       hash
     end
