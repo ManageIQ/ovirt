@@ -28,6 +28,11 @@ EOX
     end
   end
 
+  it "#resource_get on exception" do
+    @service.stub(:create_resource).and_raise(Exception, "BLAH")
+    expect { @service.resource_get('api') }.to raise_error(Exception, "BLAH")
+  end
+
   context ".ovirt?" do
     it "false when ResourceNotFound" do
       described_class.any_instance.should_receive(:engine_ssh_public_key).and_raise(RestClient::ResourceNotFound)
