@@ -217,7 +217,7 @@ module Ovirt
     rescue RestClient::ResourceNotFound, Ovirt::Error
       raise
     rescue Exception => e
-      msg = "#{log_header}: class = #{e.class.name}, message=#{e.message}, URI=#{resource.url}"
+      msg = "#{log_header}: class = #{e.class.name}, message=#{e.message}, URI=#{resource ? resource.url : path}"
       if $rhevm_log.nil?
         puts msg
       else
