@@ -77,7 +77,7 @@ module Ovirt
     end
 
     def get_vm(path)
-      vm_guid = File.basename(path, '.*')
+      vm_guid = ::File.basename(path, '.*')
       vm = get_resource_by_ems_ref("/api/vms/#{vm_guid}") rescue nil
       vm = get_resource_by_ems_ref("/api/templates/#{vm_guid}") if vm.blank?
       return vm
