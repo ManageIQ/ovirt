@@ -240,8 +240,10 @@ module Ovirt
       doc    = Nokogiri::XML(response)
       action = doc.xpath("action").first
       node   = action || doc
-      reason = node.xpath("fault/detail").text
-      raise Ovirt::Error, reason
+      fault  = node.xpath("fault/detail").text
+      usage  = node.xpath("usage_message/message").text
+      raise Ovirt::Error, fault unless fault.blank?
+      raise Ovirt::UsageError, usage
     end
 
     def parse_set_cookie_header(set_cookie_header)
