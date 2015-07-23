@@ -2,9 +2,7 @@ require 'spec_helper'
 require 'rest-client'
 
 describe Ovirt::Service do
-  before do
-    @service = described_class.new(:server => "", :username => "", :password => "")
-  end
+  let(:service) { build(:service) }
 
   context "#resource_post" do
     it "raises Ovirt::Error if HTTP 409 response code received" do
@@ -23,14 +21,14 @@ EOX
         block.call(return_data)
       end
 
-      @service.stub(:create_resource).and_return(rest_client)
-      expect { @service.resource_post('uri', 'data') }.to raise_error(Ovirt::Error, error_detail)
+      service.stub(:create_resource).and_return(rest_client)
+      expect { service.resource_post('uri', 'data') }.to raise_error(Ovirt::Error, error_detail)
     end
   end
 
   it "#resource_get on exception" do
-    @service.stub(:create_resource).and_raise(Exception, "BLAH")
-    expect { @service.resource_get('api') }.to raise_error(Exception, "BLAH")
+    service.stub(:create_resource).and_raise(Exception, "BLAH")
+    expect { service.resource_get('api') }.to raise_error(Exception, "BLAH")
   end
 
   context ".ovirt?" do

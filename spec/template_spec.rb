@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe Ovirt::Template do
+  let(:service) { build(:service) }
   before do
-    @service = double('service')
-    @template = Ovirt::Template.new(@service, {
+    @template = Ovirt::Template.new(service, {
        :id                => "128f9ffd-b82c-41e4-8c00-9742ed173bac",
        :href              => "/api/vms/128f9ffd-b82c-41e4-8c00-9742ed173bac",
        :cluster           => {
@@ -46,8 +46,8 @@ describe Ovirt::Template do
         :os_type           => "rhel5_64"}
       @template.stub(:nics).and_return([])
       @template.stub(:disks).and_return([])
-      @service.stub(:blank_template).and_return(double('blank template'))
-      @service.blank_template.should_receive(:create_vm).once.with(expected_data)
+      service.stub(:blank_template).and_return(double('blank template'))
+      service.blank_template.should_receive(:create_vm).once.with(expected_data)
       @template.create_vm(options)
     end
 
@@ -90,13 +90,13 @@ EOX
         :name       => 'new name',
         :cluster    => 'fb27f9a0-cb75-4e0f-8c07-8dec0c5ab483',
         :os_type    => 'test'}
-      @service.should_receive(:resource_post).once.with(:vms, expected_data).and_return(response_xml)
+      service.should_receive(:resource_post).once.with(:vms, expected_data).and_return(response_xml)
       @template.create_vm(options)
     end
 
     context "#create_new_disks_from_template" do
       before do
-        @disk = Ovirt::Disk.new(@service, {
+        @disk = Ovirt::Disk.new(service, {
           :id=>"01eae62b-90df-424d-978c-beaa7eb2f7f6",
           :href=>"/api/templates/54f1b9f4-0e89-4c72-9a26-f94dcb857264/disks/01eae62b-90df-424d-978c-beaa7eb2f7f6",
           :name=>"clone_Disk1",
