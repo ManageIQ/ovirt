@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Ovirt::Template do
   before do
-    @service = double('service')
+    @service = build(:service)
     @template = Ovirt::Template.new(@service, {
        :id                => "128f9ffd-b82c-41e4-8c00-9742ed173bac",
        :href              => "/api/vms/128f9ffd-b82c-41e4-8c00-9742ed173bac",

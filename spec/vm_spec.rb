@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Ovirt::Vm do
   before do
-    @service = Ovirt::Service.new({:server => "", :username => "", :password => ""})
+    @service = build(:service)
     @vm = Ovirt::Vm.new(@service, {
        :actions           => {:stop => '/api/vms/128f9ffd-b82c-41e4-8c00-9742ed173bac/stop'},
        :id                => "128f9ffd-b82c-41e4-8c00-9742ed173bac",

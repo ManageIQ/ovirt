@@ -3,7 +3,7 @@ require 'rest-client'
 
 describe Ovirt::Service do
   before do
-    @service = described_class.new(:server => "", :username => "", :password => "")
+    @service = build(:service)
   end
 
   context "#resource_post" do
