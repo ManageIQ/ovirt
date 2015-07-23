@@ -1,14 +1,12 @@
 require 'spec_helper'
 
 describe Ovirt::Vm do
-  before do
-    @vm = build(:vm_full)
-    @service = @vm.service
-  end
+  let(:service) { vm.service }
+  let(:vm)      { build(:vm_full) }
 
   context "#create_disk" do
     before do
-      @resource_url = "#{@vm.attributes[:href]}/disks"
+      @resource_url = "#{vm.attributes[:href]}/disks"
       @base_options = {
         :storage            => "aa7e70e5-abcd-1234-a605-92ce6ba652a8",
         :id                 => "01eae62b-90df-424d-978c-beaa7eb2f7f6",
@@ -51,16 +49,16 @@ EOX
           expected_data = @base_data
           options = @base_options.merge(boolean_key => true)
 
-          @service.should_receive(:resource_post).once.with(@resource_url, expected_data)
-          @vm.create_disk(options)
+          service.should_receive(:resource_post).once.with(@resource_url, expected_data)
+          vm.create_disk(options)
         end
 
         it "set to false" do
           expected_data = @base_data.gsub("<#{boolean_key.to_s}>true</#{boolean_key.to_s}>", "<#{boolean_key.to_s}>false</#{boolean_key.to_s}>")
           options = @base_options.merge(boolean_key => false)
 
-          @service.should_receive(:resource_post).once.with(@resource_url, expected_data)
-          @vm.create_disk(options)
+          service.should_receive(:resource_post).once.with(@resource_url, expected_data)
+          vm.create_disk(options)
         end
 
         it "unset" do
@@ -68,8 +66,8 @@ EOX
           options = @base_options.dup
           options.delete(boolean_key)
 
-          @service.should_receive(:resource_post).once.with(@resource_url, expected_data)
-          @vm.create_disk(options)
+          service.should_receive(:resource_post).once.with(@resource_url, expected_data)
+          vm.create_disk(options)
         end
       end
     end
@@ -78,7 +76,7 @@ EOX
   context "#create_nic" do
     before do
       @name         = 'nic_name'
-      @resource_url = "#{@vm.attributes[:href]}/nics"
+      @resource_url = "#{vm.attributes[:href]}/nics"
       @base_options = {:name => @name}
     end
 
@@ -93,23 +91,23 @@ EOX
 
     it "populates the interface" do
       interface = 'interface'
-      @service.should_receive(:resource_post).once.with(
+      service.should_receive(:resource_post).once.with(
           @resource_url, expected_data("<interface>#{interface}</interface>"))
-      @vm.create_nic(@base_options.merge({:interface => interface}))
+      vm.create_nic(@base_options.merge({:interface => interface}))
     end
 
     it "populates the network id" do
       network_id = 'network_id'
-      @service.should_receive(:resource_post).once.with(
+      service.should_receive(:resource_post).once.with(
           @resource_url, expected_data("<network id=\"#{network_id}\"/>"))
-      @vm.create_nic(@base_options.merge({:network_id => network_id}))
+      vm.create_nic(@base_options.merge({:network_id => network_id}))
     end
 
     it "populates the MAC address" do
       mac_address = 'mac_address'
-      @service.should_receive(:resource_post).once.with(
+      service.should_receive(:resource_post).once.with(
           @resource_url, expected_data("<mac address=\"#{mac_address}\"/>"))
-      @vm.create_nic(@base_options.merge({:mac_address => mac_address}))
+      vm.create_nic(@base_options.merge({:mac_address => mac_address}))
     end
   end
 
@@ -133,10 +131,10 @@ EOX
 </vm>
 EOX
 
-      @service.should_receive(:resource_put).once.with(
-          @vm.attributes[:href],
+      service.should_receive(:resource_put).once.with(
+          vm.attributes[:href],
           expected_data).and_return(return_data)
-      @vm.memory_reserve = memory_reserve
+      vm.memory_reserve = memory_reserve
     end
   end
 
@@ -156,8 +154,8 @@ EOX
         block.call(return_data)
       end
 
-      @service.stub(:create_resource).and_return(rest_client)
-      expect { @vm.stop }.to raise_error Ovirt::VmIsNotRunning
+      service.stub(:create_resource).and_return(rest_client)
+      expect { vm.stop }.to raise_error Ovirt::VmIsNotRunning
     end
   end
 
@@ -196,9 +194,9 @@ EOX
   </memory_policy>
 </vm>
 EOX
-        @service.should_receive(:version).twice.and_return(:major=>"3", :minor=>"0", :build=>"0", :revision=>"0")
-        @service.should_receive(:resource_put).once.with(@vm.attributes[:href], expected_data).and_return(return_data)
-        @vm.detach_floppy
+        service.should_receive(:version).twice.and_return(:major=>"3", :minor=>"0", :build=>"0", :revision=>"0")
+        service.should_receive(:resource_put).once.with(vm.attributes[:href], expected_data).and_return(return_data)
+        vm.detach_floppy
       end
 
       it "Ovirt 3.3 should remove payload" do
@@ -226,9 +224,9 @@ EOX
   </memory_policy>
 </vm>
 EOX
-        @service.should_receive(:version).and_return(:major=>"3", :minor=>"3", :build=>"0", :revision=>"0")
-        @service.should_receive(:resource_put).once.with(@vm.attributes[:href], expected_data).and_return(return_data)
-        @vm.detach_floppy
+        service.should_receive(:version).and_return(:major=>"3", :minor=>"3", :build=>"0", :revision=>"0")
+        service.should_receive(:resource_put).once.with(vm.attributes[:href], expected_data).and_return(return_data)
+        vm.detach_floppy
       end
     end
   end
