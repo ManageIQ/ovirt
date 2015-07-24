@@ -1,3 +1,5 @@
+require_relative 'legacy_support/cloud_init_via_floppy_payload'
+
 module Ovirt
   class Vm < Template
     self.top_level_strings    = [:name, :origin, :type, :description]
@@ -5,6 +7,8 @@ module Ovirt
     self.top_level_integers   = [:memory]
     self.top_level_timestamps = [:creation_time, :start_time]
     self.top_level_objects    = [:cluster, :template, :host]
+
+    include CloudInitViaFloppyPayload
 
     attr_accessor :creation_status_link
 
@@ -118,6 +122,24 @@ module Ovirt
       update! do |xml|
         xml.memory_policy do
           xml.guaranteed(value)
+        end
+      end
+    end
+
+    def cloud_init=(content)
+      if service.version[:major].to_i == 3 && service.version[:minor].to_i < 4
+        super  # Use legacy method defined in CloudInitViaFloppyPayload
+      else
+        begin
+          require 'yaml'
+          content = YAML.load(content)
+          update! do |xml|
+            xml.initialization do
+              content.each { |k, v| xml.send(k, v) }
+            end
+          end
+        rescue Ovirt::UsageError => err
+          raise CloudInitSyntaxError, err.message
         end
       end
     end
