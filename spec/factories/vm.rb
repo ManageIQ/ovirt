@@ -1,7 +1,12 @@
 FactoryGirl.define do
-  factory :vm_full, :class => "Ovirt::Vm" do
+  factory :vm, :class => "Ovirt::Vm" do
+    initialize_with { new(service, {}) }
+    service { build(:service) }
+  end
+
+  factory :vm_full, :parent => :vm do
     initialize_with do
-      new(build(:service),
+      new(service,
         {
           :actions           => {:stop => '/api/vms/128f9ffd-b82c-41e4-8c00-9742ed173bac/stop'},
           :id                => "128f9ffd-b82c-41e4-8c00-9742ed173bac",
