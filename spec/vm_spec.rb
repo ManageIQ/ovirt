@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe Ovirt::Vm do
   let(:service) { vm.service }
   let(:vm)      { build(:vm_full) }

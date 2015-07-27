@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe Ovirt::Base do
   it ".api_endpoint" do
     expect(Ovirt::Base.api_endpoint).to          eq("bases")

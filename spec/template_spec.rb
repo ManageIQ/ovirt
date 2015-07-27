@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe Ovirt::Template do
   let(:service) { build(:service) }
   before do

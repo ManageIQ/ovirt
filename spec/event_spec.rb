@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe Ovirt::Event do
   context ".set_event_name" do
     before :each do
