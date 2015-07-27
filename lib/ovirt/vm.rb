@@ -131,11 +131,9 @@ module Ovirt
         super  # Use legacy method defined in CloudInitViaFloppyPayload
       else
         begin
-          require 'yaml'
-          content = YAML.load(content)
           update! do |xml|
             xml.initialization do
-              content.each { |k, v| xml.send(k, v) }
+              converted_cloud_init(content).each { |k, v| xml.send(k, v) }
             end
           end
         rescue Ovirt::UsageError => err
@@ -353,6 +351,20 @@ module Ovirt
     rescue Ovirt::Error => err
       raise TemplateAlreadyExists, err.message if err.message.include?("Template name already exists")
       raise
+    end
+
+    private
+
+    def converted_cloud_init(content)
+      ovirt_cloud_init_keys = %w(active_directory_ou authorized_ssh_keys dns_search dns_servers domain host_name input_locale nic_configurations org_name regenerate_ssh_keys root_password system_locale timezone ui_language user_locale user_name)
+
+      require 'yaml'
+      raw_content = YAML.load(content)
+
+      hash = ovirt_cloud_init_keys.each_with_object({}) { |k, h| h[k] = raw_content.delete(k) }
+      custom_script = YAML.dump(raw_content).to_s.sub("---\n", "")
+      hash[:custom_script] = custom_script unless custom_script.blank?
+      hash.delete_nils
     end
   end
 end

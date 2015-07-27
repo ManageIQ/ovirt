@@ -232,13 +232,20 @@ EOX
   end
 
   it "cloud_init= Ovirt 3.4 and newer" do
-    cloud_config = "#cloud_config\nroot_password: some_password\nregenerate_ssh_keys: false\ncustom_script: \"#!/bin/bash\necho 'hi'\""
+    cloud_config = <<-EOCC.chomp
+#cloud_config
+regenerate_ssh_keys: false
+root_password: some_password
+fqdn: example.example.com
+debug: True
+EOCC
+
     expected_data = <<-EOX.chomp
 <vm>
   <initialization>
-    <root_password>some_password</root_password>
     <regenerate_ssh_keys>false</regenerate_ssh_keys>
-    <custom_script>#!/bin/bash echo 'hi'</custom_script>
+    <root_password>some_password</root_password>
+    <custom_script>fqdn: example.example.com\ndebug: true\n</custom_script>
   </initialization>
 </vm>
 EOX
