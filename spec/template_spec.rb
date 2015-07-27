@@ -44,10 +44,10 @@ describe Ovirt::Template do
         :cpu               => {:topology => {:sockets => 1, :cores => 1}},
         :high_availability => {:priority => 1, :enabled => false},
         :os_type           => "rhel5_64"}
-      @template.stub(:nics).and_return([])
-      @template.stub(:disks).and_return([])
-      service.stub(:blank_template).and_return(double('blank template'))
-      service.blank_template.should_receive(:create_vm).once.with(expected_data)
+      allow(@template).to receive(:nics).and_return([])
+      allow(@template).to receive(:disks).and_return([])
+      allow(service).to receive(:blank_template).and_return(double('blank template'))
+      expect(service.blank_template).to receive(:create_vm).once.with(expected_data)
       @template.create_vm(options)
     end
 
@@ -90,7 +90,7 @@ EOX
         :name       => 'new name',
         :cluster    => 'fb27f9a0-cb75-4e0f-8c07-8dec0c5ab483',
         :os_type    => 'test'}
-      service.should_receive(:resource_post).once.with(:vms, expected_data).and_return(response_xml)
+      expect(service).to receive(:resource_post).once.with(:vms, expected_data).and_return(response_xml)
       @template.create_vm(options)
     end
 
@@ -102,7 +102,7 @@ EOX
           :name=>"clone_Disk1",
           :storage_domains=>[{:id=>"aa7e70e5-40d0-43e2-a605-92ce6ba652a8"}]
         })
-        @template.stub(:disks).and_return([@disk])
+        allow(@template).to receive(:disks).and_return([@disk])
 
         @vm = double('rhevm_vm')
       end
@@ -111,7 +111,7 @@ EOX
         expected_data = @disk.attributes.dup
         expected_data[:storage] = expected_data[:storage_domains].first[:id]
 
-        @vm.should_receive(:create_disk).once.with(expected_data)
+        expect(@vm).to receive(:create_disk).once.with(expected_data)
         @template.send(:create_new_disks_from_template, @vm, {})
       end
 
@@ -120,14 +120,14 @@ EOX
         options = {:storage => "xxxxxxxx-40d0-43e2-a605-92ce6ba652a8"}
         expected_data.merge!(options)
 
-        @vm.should_receive(:create_disk).once.with(expected_data)
+        expect(@vm).to receive(:create_disk).once.with(expected_data)
         @template.send(:create_new_disks_from_template, @vm, options)
       end
     end
 
     context "build_clone_xml" do
       it "Properly sets vm/cpu/topology attributes" do
-        Ovirt::Base.stub(:object_to_id)
+        allow(Ovirt::Base).to receive(:object_to_id)
         xml     = @template.send(:build_clone_xml, :name => "Blank", :cluster => "6b8f1c1e-3eb0-11e4-8420-56847afe9799")
         nodeset = Nokogiri::XML.parse(xml).xpath("//vm/cpu/topology")
         node    = nodeset.first

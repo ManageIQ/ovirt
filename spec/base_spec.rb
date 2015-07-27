@@ -2,12 +2,12 @@ require 'spec_helper'
 
 describe Ovirt::Base do
   it ".api_endpoint" do
-    Ovirt::Base.api_endpoint.should          == "bases"
-    Ovirt::Template.api_endpoint.should      == "templates"
-    Ovirt::Cluster.api_endpoint.should       == "clusters"
-    Ovirt::Vm.api_endpoint.should            == "vms"
-    Ovirt::StorageDomain.api_endpoint.should == "storagedomains"
-    Ovirt::DataCenter.api_endpoint.should    == "datacenters"
+    expect(Ovirt::Base.api_endpoint).to          eq("bases")
+    expect(Ovirt::Template.api_endpoint).to      eq("templates")
+    expect(Ovirt::Cluster.api_endpoint).to       eq("clusters")
+    expect(Ovirt::Vm.api_endpoint).to            eq("vms")
+    expect(Ovirt::StorageDomain.api_endpoint).to eq("storagedomains")
+    expect(Ovirt::DataCenter.api_endpoint).to    eq("datacenters")
   end
 
   it ".href_to_guid" do
