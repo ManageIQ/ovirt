@@ -10,4 +10,7 @@ module Ovirt
   class VmAlreadyRunning < Error; end
   class VmIsNotRunning   < Error; end
   class VmNotReadyToBoot < Error; end
+
+  class UsageError < Error; end
+  class CloudInitSyntaxError < UsageError; end
 end

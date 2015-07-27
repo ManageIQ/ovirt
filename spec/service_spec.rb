@@ -24,6 +24,24 @@ EOX
       service.stub(:create_resource).and_return(rest_client)
       expect { service.resource_post('uri', 'data') }.to raise_error(Ovirt::Error, error_detail)
     end
+
+    it "raises Ovirt::Error if HTTP 409 response code received" do
+      error_detail = "Usage message"
+      return_data = <<-EOX.chomp
+<usage_message>
+  <message>#{error_detail}</message>
+</usage_message>
+EOX
+
+      rest_client = double('rest_client').as_null_object
+      rest_client.should_receive(:post) do |&block|
+        return_data.stub(:code).and_return(409)
+        block.call(return_data)
+      end
+
+      service.stub(:create_resource).and_return(rest_client)
+      expect { service.resource_post('uri', 'data') }.to raise_error(Ovirt::UsageError, error_detail)
+    end
   end
 
   it "#resource_get on exception" do
