@@ -17,7 +17,7 @@ module Ovirt
                        :node_to_bool => [:enabled])
 
       parse_first_node_with_hash(node, 'cpu/topology', hash.store_path(:cpu, :topology, {}),
-                       :attribute_to_i => [:sockets, :cores])
+                                 :attribute_to_i => [:sockets, :cores])
 
       parse_first_node(node, :high_availability, hash,
                        :node_to_bool => [:enabled],
@@ -28,7 +28,7 @@ module Ovirt
                        :node      => [:kernel, :initrd, :cmdline])
 
       hash[:os][:boot_order] = boot_order = []
-      #Collect boot order
+      # Collect boot order
       node.xpath('os/boot').each do |boot|
         dev = boot['dev']
         boot_order << {:dev => dev} unless dev.blank?
@@ -41,37 +41,34 @@ module Ovirt
     end
 
     def os_type
-      self.attributes.fetch_path(:os, :type) || 'unassigned'
+      attributes.fetch_path(:os, :type) || 'unassigned'
     end
 
-    def getCfg(snap=nil)
-      #mor = snap ? getSnapMor(snap) : @vmMor
-      cfgProps = self.attributes
+    def getCfg(_snap = nil)
+      # TODO: Remove the following MiqException and any others
+      raise MiqException::MiqVimError, "Failed to retrieve configuration information for VM" if attributes.nil?
 
-      raise MiqException::MiqVimError, "Failed to retrieve configuration information for VM" if cfgProps.nil?
-
-      cfgHash = {}
-      cfgHash['displayname'] = cfgProps[:name]
-      cfgHash['guestos'] = cfgProps.fetch_path(:os, :type)
-      cfgHash['memsize'] = cfgProps[:memory] / 1048576  # in MB
-      cfgHash['numvcpu'] = cfgProps.fetch_path(:cpu, :sockets)
+      cfg_hash = {}
+      cfg_hash['displayname'] = attributes[:name]
+      cfg_hash['guestos']     = attributes.fetch_path(:os, :type)
+      cfg_hash['memsize']     = attributes[:memory] / 1_048_576  # in MB
+      cfg_hash['numvcpu']     = attributes.fetch_path(:cpu, :sockets)
 
       # Collect disk information
-      self.attributes[:disks] = self.send(:disks, :disk) if self[:disks].nil?
-      self.disks.each_with_index do |disk, idx|
+      attributes[:disks] = send(:disks, :disk) if self[:disks].nil?
+      disks.each_with_index do |disk, idx|
         storage_domain = disk[:storage_domains].first
-        storage_id = storage_domain && storage_domain[:id]
-        disk_key = disk[:image_id].blank? ? :id : :image_id
-        file_path = storage_id && ::File.join('/dev', storage_id, disk[disk_key])
+        storage_id     = storage_domain && storage_domain[:id]
+        disk_key       = disk[:image_id].blank? ? :id : :image_id
+        file_path      = storage_id && ::File.join('/dev', storage_id, disk[disk_key])
 
         tag = "scsi0:#{idx}"
-        cfgHash["#{tag}.present"]    = "true"
-        cfgHash["#{tag}.devicetype"] = "disk"
-        cfgHash["#{tag}.filename"]   = file_path.to_s
-        cfgHash["#{tag}.format"]     = disk[:format]
-        #cfgHash["#{tag}.mode"] = dev['backing']['diskMode']
+        cfg_hash["#{tag}.present"]    = "true"
+        cfg_hash["#{tag}.devicetype"] = "disk"
+        cfg_hash["#{tag}.filename"]   = file_path.to_s
+        cfg_hash["#{tag}.format"]     = disk[:format]
       end
-      return cfgHash
+      cfg_hash
     end
 
     REQUIRED_CLONE_PARAMETERS     = [:name, :cluster]
@@ -85,9 +82,9 @@ module Ovirt
       options[:storage] = Base.object_to_id(options[:storage]) if options[:storage]
 
       case options[:clone_type]
-      when :full;     clone_to_vm(options)
-      when :linked;   clone_to_vm(options)
-      when :skeletal; clone_to_vm_via_blank_template(options)
+      when :full then     clone_to_vm(options)
+      when :linked then   clone_to_vm(options)
+      when :skeletal then clone_to_vm_via_blank_template(options)
       end
     end
 
@@ -105,7 +102,7 @@ module Ovirt
       (CLONE_ATTRIBUTES_WITH_SCALARS + CLONE_ATTRIBUTES_WITH_HASHES).each do |key|
         options[key] ||= self[key]
       end
-      options[:os_type] ||= self.os_type
+      options[:os_type] ||= os_type
 
       skeleton_options = options.dup
       skeleton_options[:clone_type] = :linked
@@ -116,7 +113,7 @@ module Ovirt
     end
 
     def create_new_disks_from_template(vm, options)
-      self.disks.each do |disk_object|
+      disks.each do |disk_object|
         disk_options            = disk_object.attributes_for_new_disk
         disk_options[:sparse]   = options[:sparse]  unless options[:sparse].nil?
         disk_options[:storage]  = options[:storage] unless options[:storage].blank?
@@ -155,14 +152,14 @@ module Ovirt
             end
           end
 
-          xml.os(:type => options[:os_type] || self.os_type) do
+          xml.os(:type => options[:os_type] || os_type) do
             xml.boot(:dev => 'hd')
           end
 
           if options[:clone_type] == :full
             xml.disks do
               xml.clone_ true
-              self.disks.each do |disk_object|
+              disks.each do |disk_object|
                 xml.disk(:id => disk_object.attributes[:id]) do
                   xml.sparse options[:sparse] unless options[:sparse].nil?
                   xml.storage_domains { xml.storage_domain(:id => options[:storage]) } if options[:storage]

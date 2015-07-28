@@ -7,7 +7,7 @@ describe Ovirt::Template do
       options = {:clone_type => :skeletal}
       expected_data = {
         :clone_type        => :linked,
-        :memory            => 536870912,
+        :memory            => 536_870_912,
         :stateless         => false,
         :type              => "server",
         :display           => {:type => "spice", :monitors => 1},
@@ -67,12 +67,10 @@ EOX
 
     context "#create_new_disks_from_template" do
       before do
-        @disk = Ovirt::Disk.new(service, {
-          :id=>"01eae62b-90df-424d-978c-beaa7eb2f7f6",
-          :href=>"/api/templates/54f1b9f4-0e89-4c72-9a26-f94dcb857264/disks/01eae62b-90df-424d-978c-beaa7eb2f7f6",
-          :name=>"clone_Disk1",
-          :storage_domains=>[{:id=>"aa7e70e5-40d0-43e2-a605-92ce6ba652a8"}]
-        })
+        @disk = Ovirt::Disk.new(service, :id              => "01eae62b-90df-424d-978c-beaa7eb2f7f6",
+                                         :href            => "/api/templates/54f1b9f4-0e89-4c72-9a26-f94dcb857264/disks/01eae62b-90df-424d-978c-beaa7eb2f7f6",
+                                         :name            => "clone_Disk1",
+                                         :storage_domains => [{:id => "aa7e70e5-40d0-43e2-a605-92ce6ba652a8"}])
         allow(template).to receive(:disks).and_return([@disk])
 
         @vm = double('rhevm_vm')

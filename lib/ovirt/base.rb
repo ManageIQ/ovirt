@@ -1,7 +1,7 @@
 module Ovirt
   class Base
     def self.create_from_xml(service, xml)
-      self.new(service, parse_xml(xml))
+      new(service, parse_xml(xml))
     end
 
     def self.xml_to_relationships(xml)
@@ -36,29 +36,29 @@ module Ovirt
       raise "Cannot parse boolean for value: <#{what.inspect}>"
     end
 
-    def self.parse_first_text(node, hash, key, modifier=nil)
+    def self.parse_first_text(node, hash, key, modifier = nil)
       text_node = node.xpath(key.to_s).first
       value = text_node.text unless text_node.nil?
-      self.set_value(value, hash, key, modifier)
+      set_value(value, hash, key, modifier)
     end
 
-    def self.parse_attribute(node, hash, key, modifier=nil)
+    def self.parse_attribute(node, hash, key, modifier = nil)
       value = node[key.to_s]
-      self.set_value(value, hash, key, modifier)
+      set_value(value, hash, key, modifier)
     end
 
     def self.set_value(value, hash, key, modifier)
       return if value.nil?
       hash[key] = case modifier
-      when :to_i    then value.to_i
-      when :to_f    then value.to_f
-      when :to_bool then self.parse_boolean(value)
-      else value
+                  when :to_i    then value.to_i
+                  when :to_f    then value.to_f
+                  when :to_bool then parse_boolean(value)
+                  else value
       end
     end
 
     def self.parse_first_node(node, path, hash, options)
-      self.parse_first_node_with_hash(node, path, nh = {}, options)
+      parse_first_node_with_hash(node, path, nh = {}, options)
       unless nh.empty?
         hash[path.to_sym] = hash[path.to_sym].nil? ? nh : hash[path.to_sym].merge(nh)
       end
@@ -68,12 +68,12 @@ module Ovirt
     def self.parse_first_node_with_hash(node, path, hash, options)
       xnode = node.xpath(path.to_s).first
       unless xnode.blank?
-        options[:attribute].to_a.each      {|key| self.parse_attribute( xnode, hash, key)}
-        options[:attribute_to_i].to_a.each {|key| self.parse_attribute( xnode, hash, key, :to_i)}
-        options[:attribute_to_f].to_a.each {|key| self.parse_attribute( xnode, hash, key, :to_f)}
-        options[:node].to_a.each           {|key| self.parse_first_text(xnode, hash, key)}
-        options[:node_to_i].to_a.each      {|key| self.parse_first_text(xnode, hash, key, :to_i)}
-        options[:node_to_bool].to_a.each   {|key| self.parse_first_text(xnode, hash, key, :to_bool)}
+        options[:attribute].to_a.each      { |key| parse_attribute(xnode, hash, key) }
+        options[:attribute_to_i].to_a.each { |key| parse_attribute(xnode, hash, key, :to_i) }
+        options[:attribute_to_f].to_a.each { |key| parse_attribute(xnode, hash, key, :to_f) }
+        options[:node].to_a.each           { |key| parse_first_text(xnode, hash, key) }
+        options[:node_to_i].to_a.each      { |key| parse_first_text(xnode, hash, key, :to_i) }
+        options[:node_to_bool].to_a.each   { |key| parse_first_text(xnode, hash, key, :to_bool) }
       end
     end
 
@@ -81,40 +81,40 @@ module Ovirt
       node.xpath(path.to_s).first.present?
     end
 
-    def self.top_level_objects=(keys)
-      @top_level_objects = keys
+    class << self
+      attr_writer :top_level_objects
     end
 
     def self.top_level_objects
       @top_level_objects ||= []
     end
 
-    def self.top_level_strings=(keys)
-      @top_level_strings = keys
+    class << self
+      attr_writer :top_level_strings
     end
 
     def self.top_level_strings
       @top_level_strings ||= []
     end
 
-    def self.top_level_integers=(keys)
-      @top_level_integers = keys
+    class << self
+      attr_writer :top_level_integers
     end
 
     def self.top_level_integers
       @top_level_integers ||= []
     end
 
-    def self.top_level_booleans=(keys)
-      @top_level_booleans = keys
+    class << self
+      attr_writer :top_level_booleans
     end
 
     def self.top_level_booleans
       @top_level_booleans ||= []
     end
 
-    def self.top_level_timestamps=(keys)
-      @top_level_timestamps = keys
+    class << self
+      attr_writer :top_level_timestamps
     end
 
     def self.top_level_timestamps
@@ -173,7 +173,7 @@ module Ovirt
     def self.href_from_creation_status_link(link)
       # "/api/vms/5024ab49-19b5-4176-9568-c004d1c9f256/creation_status/d0e45003-d490-4551-9911-05b3bec682dc"
       # => "/api/vms/5024ab49-19b5-4176-9568-c004d1c9f256"
-      link.split("/")[0,4].join("/")
+      link.split("/")[0, 4].join("/")
     end
 
     def self.href_to_guid(href)
@@ -208,16 +208,16 @@ module Ovirt
     def self.all_xml_objects(service)
       response = service.resource_get(api_endpoint)
       doc      = Nokogiri::XML(response)
-      objects  = doc.xpath("//#{element_names}/#{element_name}")
+      doc.xpath("//#{element_names}/#{element_name}")
     end
 
     def self.all(service)
-      all_xml_objects(service).collect { |xml| self.create_from_xml(service, xml) }
+      all_xml_objects(service).collect { |xml| create_from_xml(service, xml) }
     end
 
     def self.find_by_name(service, name)
       all_xml_objects(service).each do |xml|
-        obj = self.create_from_xml(service, xml)
+        obj = create_from_xml(service, xml)
         return obj if obj[:name] == name
       end
       nil
@@ -231,7 +231,7 @@ module Ovirt
       response = service.resource_get(href)
       doc = Nokogiri::XML(response)
       xml = doc.xpath("//#{element_name}").first
-      self.create_from_xml(service, xml)
+      create_from_xml(service, xml)
     rescue RestClient::ResourceNotFound
       return nil
     end
@@ -241,7 +241,7 @@ module Ovirt
     def initialize(service, options = {})
       @service       = service
       @relationships = options.delete(:relationships) || {}
-      @operations    = options.delete(:actions)       || {}
+      @operations    = options.delete(:actions) || {}
       @attributes    = options
     end
 
@@ -252,23 +252,23 @@ module Ovirt
     end
 
     def reload
-      self.replace(self.class.find_by_href(@service, self[:href]))
+      replace(self.class.find_by_href(@service, self[:href]))
     end
 
     def method_missing(m, *args)
-      if @relationships.has_key?(m)
+      if @relationships.key?(m)
         relationship(m)
-      elsif @operations.has_key?(m)
+      elsif @operations.key?(m)
         operation(m, args)
-      elsif @attributes.has_key?(m)
+      elsif @attributes.key?(m)
         @attributes[m]
       else
         super
       end
     end
 
-    def operation(method, *args)
-      if @operations.has_key?(method.to_sym)
+    def operation(method, *_args)
+      if @operations.key?(method.to_sym)
         builder = Nokogiri::XML::Builder.new do |xml|
           xml.action { yield xml if block_given? }
         end
@@ -281,7 +281,7 @@ module Ovirt
     end
 
     def relationship(rel)
-      if @relationships.has_key?(rel.to_sym)
+      if @relationships.key?(rel.to_sym)
         rel_str  = rel.to_s
         rel_str  = 'storage_domains' if rel_str == 'storagedomains'
         rel_str  = 'data_centers'    if rel_str == 'datacenters'
@@ -311,7 +311,7 @@ module Ovirt
       response = update(&block)
 
       obj = self.class.create_from_xml(@service, response)
-      self.replace(obj)
+      replace(obj)
     end
 
     def update

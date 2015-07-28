@@ -3,7 +3,6 @@ module Ovirt
     self.top_level_strings = [:name, :description, :type, :unit]
 
     def self.parse_node_extended(node, hash)
-      values               = []
       values_node          = node.xpath('values').first
       values_type          = values_node['type']
       values = values_node.xpath('value').collect do |v|

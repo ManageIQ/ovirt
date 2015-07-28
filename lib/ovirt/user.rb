@@ -5,7 +5,7 @@ module Ovirt
 
     def self.parse_node_extended(node, hash)
       groups_node   = node.xpath('groups').first
-      hash[:groups] = groups_node.xpath('group').collect { |group_node| group_node.text } unless groups_node.nil?
+      hash[:groups] = groups_node.xpath('group').collect(&:text) unless groups_node.nil?
     end
   end
 end

@@ -6,23 +6,23 @@ describe Ovirt::Vm do
     before do
       @resource_url = "#{vm.attributes[:href]}/disks"
       @base_options = {
-        :storage            => "aa7e70e5-abcd-1234-a605-92ce6ba652a8",
-        :id                 => "01eae62b-90df-424d-978c-beaa7eb2f7f6",
-        :href               => "/api/templates/54f1b9f4-0e89-4c72-9a26-f94dcb857264/disks/01eae62b-90df-424d-978c-beaa7eb2f7f6",
-        :name               => "bd-clone_Disk1",
-        :interface          => "virtio",
-        :format             => "raw",
-        :image_id           => "a791ba77-8cc1-44de-9945-69f0a291cc47",
-        :size               => 10737418240,
-        :provisioned_size   => 10737418240,
-        :actual_size        => 1316855808,
-        :sparse             => true,
-        :bootable           => true,
-        :wipe_after_delete  => true,
-        :propagate_errors   => true,
-        :status             => {:state => "ok"},
-        :storage_domains    => [{:id => "aa7e70e5-40d0-43e2-a605-92ce6ba652a8"}],
-        :storage_domain_id  => "aa7e70e5-40d0-43e2-a605-92ce6ba652a8"
+        :storage           => "aa7e70e5-abcd-1234-a605-92ce6ba652a8",
+        :id                => "01eae62b-90df-424d-978c-beaa7eb2f7f6",
+        :href              => "/api/templates/54f1b9f4-0e89-4c72-9a26-f94dcb857264/disks/01eae62b-90df-424d-978c-beaa7eb2f7f6",
+        :name              => "bd-clone_Disk1",
+        :interface         => "virtio",
+        :format            => "raw",
+        :image_id          => "a791ba77-8cc1-44de-9945-69f0a291cc47",
+        :size              => 10_737_418_240,
+        :provisioned_size  => 10_737_418_240,
+        :actual_size       => 1_316_855_808,
+        :sparse            => true,
+        :bootable          => true,
+        :wipe_after_delete => true,
+        :propagate_errors  => true,
+        :status            => {:state => "ok"},
+        :storage_domains   => [{:id => "aa7e70e5-40d0-43e2-a605-92ce6ba652a8"}],
+        :storage_domain_id => "aa7e70e5-40d0-43e2-a605-92ce6ba652a8"
       }
       @base_data = <<-EOX.chomp
 <disk>
@@ -42,7 +42,7 @@ EOX
     end
 
     [:sparse, :bootable, :wipe_after_delete, :propagate_errors].each do |boolean_key|
-      context "xml #{boolean_key.to_s} value" do
+      context "xml #{boolean_key} value" do
         it "set to true" do
           expected_data = @base_data
           options = @base_options.merge(boolean_key => true)
@@ -52,7 +52,7 @@ EOX
         end
 
         it "set to false" do
-          expected_data = @base_data.gsub("<#{boolean_key.to_s}>true</#{boolean_key.to_s}>", "<#{boolean_key.to_s}>false</#{boolean_key.to_s}>")
+          expected_data = @base_data.gsub("<#{boolean_key}>true</#{boolean_key}>", "<#{boolean_key}>false</#{boolean_key}>")
           options = @base_options.merge(boolean_key => false)
 
           expect(service).to receive(:resource_post).once.with(@resource_url, expected_data)
@@ -60,7 +60,7 @@ EOX
         end
 
         it "unset" do
-          expected_data = @base_data.gsub("  <#{boolean_key.to_s}>true</#{boolean_key.to_s}>\n", "")
+          expected_data = @base_data.gsub("  <#{boolean_key}>true</#{boolean_key}>\n", "")
           options = @base_options.dup
           options.delete(boolean_key)
 
@@ -79,7 +79,7 @@ EOX
     end
 
     def expected_data(element)
-       return <<-EOX.chomp
+      <<-EOX.chomp
 <nic>
   <name>#{@name}</name>
   #{element}
@@ -90,22 +90,22 @@ EOX
     it "populates the interface" do
       interface = 'interface'
       expect(service).to receive(:resource_post).once.with(
-          @resource_url, expected_data("<interface>#{interface}</interface>"))
-      vm.create_nic(@base_options.merge({:interface => interface}))
+        @resource_url, expected_data("<interface>#{interface}</interface>"))
+      vm.create_nic(@base_options.merge(:interface => interface))
     end
 
     it "populates the network id" do
       network_id = 'network_id'
       expect(service).to receive(:resource_post).once.with(
-          @resource_url, expected_data("<network id=\"#{network_id}\"/>"))
-      vm.create_nic(@base_options.merge({:network_id => network_id}))
+        @resource_url, expected_data("<network id=\"#{network_id}\"/>"))
+      vm.create_nic(@base_options.merge(:network_id => network_id))
     end
 
     it "populates the MAC address" do
       mac_address = 'mac_address'
       expect(service).to receive(:resource_post).once.with(
-          @resource_url, expected_data("<mac address=\"#{mac_address}\"/>"))
-      vm.create_nic(@base_options.merge({:mac_address => mac_address}))
+        @resource_url, expected_data("<mac address=\"#{mac_address}\"/>"))
+      vm.create_nic(@base_options.merge(:mac_address => mac_address))
     end
   end
 
@@ -130,8 +130,8 @@ EOX
 EOX
 
       expect(service).to receive(:resource_put).once.with(
-          vm.attributes[:href],
-          expected_data).and_return(return_data)
+        vm.attributes[:href],
+        expected_data).and_return(return_data)
       vm.memory_reserve = memory_reserve
     end
   end
@@ -192,7 +192,7 @@ EOX
   </memory_policy>
 </vm>
 EOX
-        expect(service).to receive(:version).twice.and_return(:major=>"3", :minor=>"0", :build=>"0", :revision=>"0")
+        expect(service).to receive(:version).twice.and_return(:major => "3", :minor => "0", :build => "0", :revision => "0")
         expect(service).to receive(:resource_put).once.with(vm.attributes[:href], expected_data).and_return(return_data)
         vm.detach_floppy
       end
@@ -222,7 +222,7 @@ EOX
   </memory_policy>
 </vm>
 EOX
-        expect(service).to receive(:version).and_return(:major=>"3", :minor=>"3", :build=>"0", :revision=>"0")
+        expect(service).to receive(:version).and_return(:major => "3", :minor => "3", :build => "0", :revision => "0")
         expect(service).to receive(:resource_put).once.with(vm.attributes[:href], expected_data).and_return(return_data)
         vm.detach_floppy
       end

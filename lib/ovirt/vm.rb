@@ -49,8 +49,7 @@ module Ovirt
     end
 
     def destroy
-      # TODO:
-      # 1. If VM was running, wait for it to stop
+      # TODO: If VM was running, wait for it to stop
       begin
         stop
       rescue VmIsNotRunning
@@ -210,10 +209,8 @@ module Ovirt
       attach_payload(payload)
     end
 
-    def detach_payload_3_3(types)
-      update! do |xml|
-        xml.payloads
-      end
+    def detach_payload_3_3(_types)
+      update!(&:payloads)
     end
 
     # Attaches the +files+ as a floppy drive payload.
@@ -237,8 +234,8 @@ module Ovirt
         end
       end
     rescue Ovirt::Error => err
-      raise unless err.message =~ /disks .+ are locked/
-      raise VmNotReadyToBoot.new [err.message, err]
+      raise VmNotReadyToBoot, [err.message, err] if err.message =~ /disks .+ are locked/
+      raise
     end
 
     def boot_from_cdrom(iso_file_name)
@@ -255,8 +252,8 @@ module Ovirt
         end
       end
     rescue Ovirt::Error => err
-      raise unless err.message =~ /disks .+ are locked/
-      raise VmNotReadyToBoot.new [err.message, err]
+      raise VmNotReadyToBoot, [err.message, err] if err.message =~ /disks .+ are locked/
+      raise
     end
 
     def self.parse_xml(xml)
@@ -267,7 +264,7 @@ module Ovirt
                        :node => [:affinity])
 
       parse_first_node_with_hash(node, 'placement_policy/host', hash[:placement_policy][:host] = {},
-                       :attribute => [:id])
+                                 :attribute => [:id])
 
       parse_first_node(node, :memory_policy, hash,
                        :node_to_i => [:guaranteed])
@@ -337,7 +334,7 @@ module Ovirt
       snap
     end
 
-    def create_template(options={})
+    def create_template(options = {})
       builder = Nokogiri::XML::Builder.new do |xml|
         xml.template do
           xml.name options[:name]

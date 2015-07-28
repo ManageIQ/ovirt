@@ -2,7 +2,7 @@ module Ovirt
   class Inventory
     attr_accessor :service
 
-    def initialize(options={})
+    def initialize(options = {})
       @service = Service.new(options)
     end
 
@@ -80,7 +80,7 @@ module Ovirt
       vm_guid = ::File.basename(path, '.*')
       vm = get_resource_by_ems_ref("/api/vms/#{vm_guid}") rescue nil
       vm = get_resource_by_ems_ref("/api/templates/#{vm_guid}") if vm.blank?
-      return vm
+      vm
     end
 
     def get_resource_by_ems_ref(uri_suffix, element_name = nil)
@@ -131,16 +131,16 @@ module Ovirt
     # > secondary_item_jobs({:vm, => [v1, v2]})
     #  => [[v1, :disks], [v1, :snapshots], [v1, :nics], [v2, :disks], [v2, :snapshots], [v2, :nics]]
     def secondary_item_jobs(primary_items)
-      SECONDARY_ITEMS.collect do |key, methods|
+      SECONDARY_ITEMS.flat_map do |key, methods|
         primary_items[key].product(methods)
-      end.flatten(1)
+      end
     end
 
     def collect_primary_items
       jobs = primary_item_jobs
 
       results = collect_in_parallel(jobs) do |_, method|
-        self.send(method)
+        send(method)
       end
 
       jobs.zip(results).each_with_object({}) do |((key, _), result), hash|

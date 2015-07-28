@@ -25,7 +25,7 @@ module Ovirt
 
           unless vg_hash.blank?
             parse_first_node(vg, :logical_unit, vg_hash,
-              :node => [:address, :port, :target, :username, :serial, :vendor_id, :product_id, :lun_mapping, :portal, :size, :paths])
+                             :node => [:address, :port, :target, :username, :serial, :vendor_id, :product_id, :lun_mapping, :portal, :size, :paths])
           end
         end
       end

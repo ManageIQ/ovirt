@@ -12,6 +12,6 @@ describe Ovirt::Base do
     guid = "1c92b67c-9d10-4f48-85bd-28ba2fd6d9b3"
     expect(Ovirt::Base.send(:href_to_guid, "/api/clusters/#{guid}")).to eq(guid)
     expect(Ovirt::Base.send(:href_to_guid, guid)).to                    eq(guid)
-    expect { Ovirt::Base.send(:href_to_guid, 12345) }.to                raise_error(ArgumentError)
+    expect { Ovirt::Base.send(:href_to_guid, 12_345) }.to               raise_error(ArgumentError)
   end
 end
