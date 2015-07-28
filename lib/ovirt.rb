@@ -2,6 +2,8 @@ require 'active_support/all'
 require 'more_core_extensions/all'
 
 require 'ovirt/exception'
+require 'ovirt/logging'
+require 'ovirt/null_logger'
 require 'ovirt/base'
 require 'ovirt/version'
 
@@ -32,3 +34,13 @@ require 'ovirt/template'
 require 'ovirt/user'
 require 'ovirt/vm'
 require 'ovirt/vmpool'
+
+module Ovirt
+  class << self
+    attr_writer :logger
+  end
+
+  def self.logger
+    @logger ||= NullLogger.new
+  end
+end
