@@ -12,7 +12,9 @@ unless source.nil?
 end
 
 destination = source.create_template(:name => DESTINATION_TEMPLATE_NAME)
+puts "Created Template:"
+pp destination
 
-puts "Created Template"; pp destination
 destination = Ovirt::Template.find_by_name(rhevm, DESTINATION_TEMPLATE_NAME)
-puts "Found Template"; pp destination
+puts "Found Template:"
+pp destination

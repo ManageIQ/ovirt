@@ -49,8 +49,7 @@ module Ovirt
     end
 
     def destroy
-      # TODO:
-      # 1. If VM was running, wait for it to stop
+      # TODO: If VM was running, wait for it to stop
       begin
         stop
       rescue VmIsNotRunning
@@ -235,8 +234,8 @@ module Ovirt
         end
       end
     rescue Ovirt::Error => err
-      raise unless err.message =~ /disks .+ are locked/
-      raise VmNotReadyToBoot.new [err.message, err]
+      raise VmNotReadyToBoot, [err.message, err] if err.message =~ /disks .+ are locked/
+      raise
     end
 
     def boot_from_cdrom(iso_file_name)
@@ -253,8 +252,8 @@ module Ovirt
         end
       end
     rescue Ovirt::Error => err
-      raise unless err.message =~ /disks .+ are locked/
-      raise VmNotReadyToBoot.new [err.message, err]
+      raise VmNotReadyToBoot, [err.message, err] if err.message =~ /disks .+ are locked/
+      raise
     end
 
     def self.parse_xml(xml)

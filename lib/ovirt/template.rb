@@ -46,15 +46,13 @@ module Ovirt
 
     def getCfg(_snap = nil)
       # mor = snap ? getSnapMor(snap) : @vmMor
-      cfgProps = attributes
+      raise MiqException::MiqVimError, "Failed to retrieve configuration information for VM" if attributes.nil?
 
-      raise MiqException::MiqVimError, "Failed to retrieve configuration information for VM" if cfgProps.nil?
-
-      cfgHash = {}
-      cfgHash['displayname'] = cfgProps[:name]
-      cfgHash['guestos'] = cfgProps.fetch_path(:os, :type)
-      cfgHash['memsize'] = cfgProps[:memory] / 1_048_576  # in MB
-      cfgHash['numvcpu'] = cfgProps.fetch_path(:cpu, :sockets)
+      cfg_hash = {}
+      cfg_hash['displayname'] = attributes[:name]
+      cfg_hash['guestos']     = attributes.fetch_path(:os, :type)
+      cfg_hash['memsize']     = attributes[:memory] / 1_048_576  # in MB
+      cfg_hash['numvcpu']     = attributes.fetch_path(:cpu, :sockets)
 
       # Collect disk information
       attributes[:disks] = send(:disks, :disk) if self[:disks].nil?
@@ -65,13 +63,13 @@ module Ovirt
         file_path = storage_id && ::File.join('/dev', storage_id, disk[disk_key])
 
         tag = "scsi0:#{idx}"
-        cfgHash["#{tag}.present"]    = "true"
-        cfgHash["#{tag}.devicetype"] = "disk"
-        cfgHash["#{tag}.filename"]   = file_path.to_s
-        cfgHash["#{tag}.format"]     = disk[:format]
-        # cfgHash["#{tag}.mode"] = dev['backing']['diskMode']
+        cfg_hash["#{tag}.present"]    = "true"
+        cfg_hash["#{tag}.devicetype"] = "disk"
+        cfg_hash["#{tag}.filename"]   = file_path.to_s
+        cfg_hash["#{tag}.format"]     = disk[:format]
+        # cfg_hash["#{tag}.mode"] = dev['backing']['diskMode']
       end
-      cfgHash
+      cfg_hash
     end
 
     REQUIRED_CLONE_PARAMETERS     = [:name, :cluster]

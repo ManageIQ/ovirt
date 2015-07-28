@@ -91,21 +91,21 @@ EOX
       interface = 'interface'
       expect(service).to receive(:resource_post).once.with(
         @resource_url, expected_data("<interface>#{interface}</interface>"))
-      vm.create_nic(@base_options.merge({:interface => interface}))
+      vm.create_nic(@base_options.merge(:interface => interface))
     end
 
     it "populates the network id" do
       network_id = 'network_id'
       expect(service).to receive(:resource_post).once.with(
         @resource_url, expected_data("<network id=\"#{network_id}\"/>"))
-      vm.create_nic(@base_options.merge({:network_id => network_id}))
+      vm.create_nic(@base_options.merge(:network_id => network_id))
     end
 
     it "populates the MAC address" do
       mac_address = 'mac_address'
       expect(service).to receive(:resource_post).once.with(
         @resource_url, expected_data("<mac address=\"#{mac_address}\"/>"))
-      vm.create_nic(@base_options.merge({:mac_address => mac_address}))
+      vm.create_nic(@base_options.merge(:mac_address => mac_address))
     end
   end
 
