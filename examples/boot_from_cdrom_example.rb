@@ -10,7 +10,7 @@ rhevm    = ExampleHelper.service
 cluster  = Ovirt::Cluster.find_by_name(rhevm, CLUSTER_NAME)
 template = Ovirt::Template.find_by_name(rhevm, TEMPLATE_NAME)
 
-payload  = { "ks.cfg" => <<-EOF }
+payload  = {"ks.cfg" => <<-EOF }
 ##### RHEL 6.2 Desktop Kickstart file #####
 
 ### Install info

@@ -30,8 +30,8 @@ pp pxe_template.attributes
 
 cluster = Ovirt::Cluster.find_by_name(rhevm, CLUSTER)
 vm      = pxe_template.clone_to_vm_via_blank_template(
-  :name     => VM_NAME,
-  :cluster  => cluster,
+  :name    => VM_NAME,
+  :cluster => cluster,
 )
 
 puts "Created VM"

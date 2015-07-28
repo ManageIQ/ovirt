@@ -14,8 +14,8 @@ pp rhevm.summary
 
 puts "API:#{rhevm.api.inspect}"
 puts "Capabilities:\t#{rhevm.resource_get(:capabilities)}"
-#puts "Users:\t#{rhevm.resource_get(:users)}"
-#puts "Groups:\t#{rhevm.resource_get(:groups)}"
+# puts "Users:\t#{rhevm.resource_get(:users)}"
+# puts "Groups:\t#{rhevm.resource_get(:groups)}"
 puts "Roles:\t#{rhevm.resource_get(:roles)}"
 puts "Tags:\t#{rhevm.resource_get(:tags)}"
 puts "Datacenters:\t#{rhevm.resource_get(:datacenters)}"

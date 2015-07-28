@@ -13,11 +13,11 @@ unless source.nil?
 end
 
 destination = source.create_vm(
-  :name         => VM_NAME,
-  :clone_type   => :full,
-  :cluster      => Ovirt::Cluster.find_by_id(rhevm, source[:cluster][:id]),
-  :sparse       => :false,
-  :storage      => Ovirt::StorageDomain.find_by_name(rhevm, DESTINATION_STORAGE_DOMAIN)[:href],
+  :name       => VM_NAME,
+  :clone_type => :full,
+  :cluster    => Ovirt::Cluster.find_by_id(rhevm, source[:cluster][:id]),
+  :sparse     => :false,
+  :storage    => Ovirt::StorageDomain.find_by_name(rhevm, DESTINATION_STORAGE_DOMAIN)[:href],
 )
 
 puts "Created VM"

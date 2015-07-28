@@ -7,7 +7,6 @@ FactoryGirl.define do
   factory :vm_full, :parent => :vm do
     initialize_with do
       new(service,
-        {
           :actions           => {:stop => '/api/vms/128f9ffd-b82c-41e4-8c00-9742ed173bac/stop'},
           :id                => "128f9ffd-b82c-41e4-8c00-9742ed173bac",
           :href              => "/api/vms/128f9ffd-b82c-41e4-8c00-9742ed173bac",
@@ -33,8 +32,7 @@ FactoryGirl.define do
           :placement_policy  => {:affinity => "migratable", :host => {}},
           :memory_policy     => {:guaranteed => 536_870_912},
           :guest_info        => {}
-        }
-      )
+         )
     end
   end
 end

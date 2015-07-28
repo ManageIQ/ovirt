@@ -68,7 +68,7 @@ EOX
   end
 
   context "#base_uri" do
-    let(:defaults) { {:username => nil, :password => nil}}
+    let(:defaults) { {:username => nil, :password => nil} }
     subject { described_class.new(defaults.merge(@options)).send(:base_uri) }
 
     it "ipv4" do

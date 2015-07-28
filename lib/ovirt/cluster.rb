@@ -16,7 +16,7 @@ module Ovirt
     end
 
     def find_network_by_name(network_name)
-      self.networks.detect { |n| n[:name] == network_name }
+      networks.detect { |n| n[:name] == network_name }
     end
   end
 end

@@ -12,7 +12,7 @@ module Ovirt
 
       supported_versions_node       = node.xpath('supported_versions').first
       supported_versions            = {}
-      supported_versions[:versions] = supported_versions_node.xpath('version').collect { |version_node| { :major => version_node['major'].to_i, :minor => version_node['minor'].to_i } }
+      supported_versions[:versions] = supported_versions_node.xpath('version').collect { |version_node| {:major => version_node['major'].to_i, :minor => version_node['minor'].to_i} }
       hash[:supported_versions]     = supported_versions
     end
   end

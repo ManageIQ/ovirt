@@ -14,7 +14,7 @@ module Ovirt
       while self[:snapshot_status] == "locked" || self[:snapshot_status] == "ok"
         sleep 2
         break if (obj = self.class.find_by_href(@service, self[:href])).nil?
-        self.replace(obj)
+        replace(obj)
       end
     end
   end

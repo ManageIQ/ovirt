@@ -7,7 +7,6 @@ FactoryGirl.define do
   factory :template_full, :parent => :template do
     initialize_with do
       new(service,
-        {
           :id                => "128f9ffd-b82c-41e4-8c00-9742ed173bac",
           :href              => "/api/vms/128f9ffd-b82c-41e4-8c00-9742ed173bac",
           :cluster           => {
@@ -19,7 +18,7 @@ FactoryGirl.define do
           :name              => "bd-skeletal-clone-from-template",
           :origin            => "rhev",
           :type              => "server",
-          :memory            => 536870912,
+          :memory            => 536_870_912,
           :stateless         => false,
           :creation_time     => "2013-09-04 16:24:20 -0400",
           :status            => {:state => "down"},
@@ -30,10 +29,9 @@ FactoryGirl.define do
           :os                => {:type => "rhel5_64", :boot_order => [{:dev => "hd"}]},
           :custom_attributes => [],
           :placement_policy  => {:affinity => "migratable", :host => {}},
-          :memory_policy     => {:guaranteed => 536870912},
+          :memory_policy     => {:guaranteed => 536_870_912},
           :guest_info        => {}
-        }
-      )
+         )
     end
   end
 end

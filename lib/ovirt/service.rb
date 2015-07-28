@@ -20,16 +20,16 @@ module Ovirt
       klass.create_from_xml(self, xml)
     end
 
-    def initialize(options={})
+    def initialize(options = {})
       @options = DEFAULT_OPTIONS.merge(options)
       parse_domain_name
-      REQUIRED_OPTIONS.each { |key| raise "No #{key} specified" unless @options.has_key?(key) }
+      REQUIRED_OPTIONS.each { |key| raise "No #{key} specified" unless @options.key?(key) }
       @password = @options.delete(:password)
       @session_id = @options[:session_id]
     end
 
     def inspect # just like the default inspect, but WITHOUT @password
-      "#<#{self.class.name}:0x#{(self.object_id << 1).to_s(16).rjust(14,'0')} @options=#{@options.inspect}>"
+      "#<#{self.class.name}:0x#{(object_id << 1).to_s(16).rjust(14, '0')} @options=#{@options.inspect}>"
     end
 
     def api(reload = false)
@@ -137,7 +137,7 @@ module Ovirt
 
     def self.ovirt?(options)
       options[:username] = options[:password] = "_unused"
-      !self.new(options).engine_ssh_public_key.to_s.blank?
+      !new(options).engine_ssh_public_key.to_s.blank?
     rescue RestClient::ResourceNotFound
       false
     end
@@ -147,13 +147,13 @@ module Ovirt
       RestClient::Resource.new("#{base_uri}/engine.ssh.key.txt", resource_options).get
     end
 
-    def paginate_resource_get(path = nil, sort_by=:name, direction=:asc)
+    def paginate_resource_get(path = nil, sort_by = :name, direction = :asc)
       log_header = "#{self.class.name}#paginate_resource_get"
       page = 1
       full_xml = nil
       loop do
         uri = "#{path}?search=sortby%20#{sort_by}%20#{direction}%20page%20#{page}"
-        partial_xml_str = self.resource_get(uri)
+        partial_xml_str = resource_get(uri)
         if full_xml.nil?
           full_xml = Nokogiri::XML(partial_xml_str)
         else
@@ -165,18 +165,18 @@ module Ovirt
         page += 1
       end
       $rhevm_log.debug "#{log_header}: Combined elements for <#{path}>.  Total elements:<#{full_xml.root.children.count}>" if $rhevm_log && $rhevm_log.debug?
-      return full_xml
+      full_xml
     end
 
     def resource_get(path = nil)
       resource_verb(path, :get)
     end
 
-    def resource_put(path, payload, additional_headers={:content_type => :xml, :accept => :xml})
+    def resource_put(path, payload, additional_headers = {:content_type => :xml, :accept => :xml})
       resource_verb(path, :put, payload, additional_headers)
     end
 
-    def resource_post(path, payload, additional_headers={:content_type => :xml, :accept => :xml})
+    def resource_post(path, payload, additional_headers = {:content_type => :xml, :accept => :xml})
       resource_verb(path, :post, payload, additional_headers)
     end
 
@@ -208,7 +208,7 @@ module Ovirt
         end
       end
     rescue RestClient::Unauthorized
-      if self.session_id
+      if session_id
         self.session_id = nil
         retry
       else
@@ -262,11 +262,11 @@ module Ovirt
     end
 
     def resource_options
-      headers = merge_headers({ 'Prefer' => 'persistent-auth' })
+      headers = merge_headers('Prefer' => 'persistent-auth')
       options = {}
 
-      if self.session_id
-        headers[:cookie]     = "#{SESSION_ID_KEY}=#{self.session_id}"
+      if session_id
+        headers[:cookie]     = "#{SESSION_ID_KEY}=#{session_id}"
       else
         options[:user]       = fully_qualified_username
         options[:password]   = password
@@ -285,7 +285,7 @@ module Ovirt
     end
 
     def authorization_header
-      @authorization_header ||= { :authorization => "Basic #{authorization_value}" }
+      @authorization_header ||= {:authorization => "Basic #{authorization_value}"}
     end
 
     def authorization_value
@@ -315,9 +315,7 @@ module Ovirt
       @options[:username]
     end
 
-    def password
-      @password
-    end
+    attr_reader :password
 
     def domain
       @options[:domain]
@@ -345,6 +343,5 @@ module Ovirt
         end
       end
     end
-
   end
 end
