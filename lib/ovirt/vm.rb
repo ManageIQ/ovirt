@@ -210,7 +210,7 @@ module Ovirt
       attach_payload(payload)
     end
 
-    def detach_payload_3_3(types)
+    def detach_payload_3_3(_types)
       update! do |xml|
         xml.payloads
       end

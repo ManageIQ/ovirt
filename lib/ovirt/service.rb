@@ -23,7 +23,7 @@ module Ovirt
     def initialize(options={})
       @options = DEFAULT_OPTIONS.merge(options)
       parse_domain_name
-      REQUIRED_OPTIONS.each { |key| raise "No #{key.to_s} specified" unless @options.has_key?(key) }
+      REQUIRED_OPTIONS.each { |key| raise "No #{key} specified" unless @options.has_key?(key) }
       @password = @options.delete(:password)
       @session_id = @options[:session_id]
     end

@@ -8,7 +8,7 @@ def print_object(base, caption, indent = 0, recurse = true)
   indentation = "\t" * indent
   puts_caption(caption, indentation)
   base.keys.sort_by(&:to_s).each do |key|
-    puts "#{indentation}#{key.to_s}:\t#{base[key].inspect}"
+    puts "#{indentation}#{key}:\t#{base[key].inspect}"
   end
   puts "#{indentation}relationships:\t#{base.relationships.inspect}"
   puts "#{indentation}operations:\t#{base.operations.inspect}"

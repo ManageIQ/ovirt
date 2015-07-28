@@ -267,7 +267,7 @@ module Ovirt
       end
     end
 
-    def operation(method, *args)
+    def operation(method, *_args)
       if @operations.has_key?(method.to_sym)
         builder = Nokogiri::XML::Builder.new do |xml|
           xml.action { yield xml if block_given? }

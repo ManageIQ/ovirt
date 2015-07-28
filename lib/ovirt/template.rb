@@ -44,7 +44,7 @@ module Ovirt
       self.attributes.fetch_path(:os, :type) || 'unassigned'
     end
 
-    def getCfg(snap=nil)
+    def getCfg(_snap=nil)
       #mor = snap ? getSnapMor(snap) : @vmMor
       cfgProps = self.attributes
 

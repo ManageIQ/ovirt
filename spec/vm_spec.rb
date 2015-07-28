@@ -42,7 +42,7 @@ EOX
     end
 
     [:sparse, :bootable, :wipe_after_delete, :propagate_errors].each do |boolean_key|
-      context "xml #{boolean_key.to_s} value" do
+      context "xml #{boolean_key} value" do
         it "set to true" do
           expected_data = @base_data
           options = @base_options.merge(boolean_key => true)
@@ -52,7 +52,7 @@ EOX
         end
 
         it "set to false" do
-          expected_data = @base_data.gsub("<#{boolean_key.to_s}>true</#{boolean_key.to_s}>", "<#{boolean_key.to_s}>false</#{boolean_key.to_s}>")
+          expected_data = @base_data.gsub("<#{boolean_key}>true</#{boolean_key}>", "<#{boolean_key}>false</#{boolean_key}>")
           options = @base_options.merge(boolean_key => false)
 
           expect(service).to receive(:resource_post).once.with(@resource_url, expected_data)
@@ -60,7 +60,7 @@ EOX
         end
 
         it "unset" do
-          expected_data = @base_data.gsub("  <#{boolean_key.to_s}>true</#{boolean_key.to_s}>\n", "")
+          expected_data = @base_data.gsub("  <#{boolean_key}>true</#{boolean_key}>\n", "")
           options = @base_options.dup
           options.delete(boolean_key)
 
