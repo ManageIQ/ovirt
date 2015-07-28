@@ -1,33 +1,6 @@
 describe Ovirt::Template do
-  let(:service) { build(:service) }
-  before do
-    @template = Ovirt::Template.new(service, {
-       :id                => "128f9ffd-b82c-41e4-8c00-9742ed173bac",
-       :href              => "/api/vms/128f9ffd-b82c-41e4-8c00-9742ed173bac",
-       :cluster           => {
-         :id   => "5be5d08a-a60b-11e2-bee6-005056a217db",
-         :href => "/api/clusters/5be5d08a-a60b-11e2-bee6-005056a217db"},
-       :template          => {
-         :id   => "00000000-0000-0000-0000-000000000000",
-         :href => "/api/templates/00000000-0000-0000-0000-000000000000"},
-       :name              => "bd-skeletal-clone-from-template",
-       :origin            => "rhev",
-       :type              => "server",
-       :memory            => 536870912,
-       :stateless         => false,
-       :creation_time     => "2013-09-04 16:24:20 -0400",
-       :status            => {:state => "down"},
-       :display           => {:type => "spice", :monitors => 1},
-       :usb               => {:enabled => false},
-       :cpu               => {:topology => {:sockets => 1, :cores => 1}},
-       :high_availability => {:priority => 1, :enabled => false},
-       :os                => {:type => "rhel5_64", :boot_order => [{:dev => "hd"}]},
-       :custom_attributes => [],
-       :placement_policy  => {:affinity => "migratable", :host => {}},
-       :memory_policy     => {:guaranteed => 536870912},
-       :guest_info        => {}
-    })
-  end
+  let(:service)  { template.service }
+  let(:template) { build(:template_full) }
 
   context "#create_vm" do
     it "clones properties for skeletal clones" do
@@ -42,11 +15,11 @@ describe Ovirt::Template do
         :cpu               => {:topology => {:sockets => 1, :cores => 1}},
         :high_availability => {:priority => 1, :enabled => false},
         :os_type           => "rhel5_64"}
-      allow(@template).to receive(:nics).and_return([])
-      allow(@template).to receive(:disks).and_return([])
+      allow(template).to receive(:nics).and_return([])
+      allow(template).to receive(:disks).and_return([])
       allow(service).to receive(:blank_template).and_return(double('blank template'))
       expect(service.blank_template).to receive(:create_vm).once.with(expected_data)
-      @template.create_vm(options)
+      template.create_vm(options)
     end
 
     it "overrides properties for linked clones" do
@@ -89,7 +62,7 @@ EOX
         :cluster    => 'fb27f9a0-cb75-4e0f-8c07-8dec0c5ab483',
         :os_type    => 'test'}
       expect(service).to receive(:resource_post).once.with(:vms, expected_data).and_return(response_xml)
-      @template.create_vm(options)
+      template.create_vm(options)
     end
 
     context "#create_new_disks_from_template" do
@@ -100,7 +73,7 @@ EOX
           :name=>"clone_Disk1",
           :storage_domains=>[{:id=>"aa7e70e5-40d0-43e2-a605-92ce6ba652a8"}]
         })
-        allow(@template).to receive(:disks).and_return([@disk])
+        allow(template).to receive(:disks).and_return([@disk])
 
         @vm = double('rhevm_vm')
       end
@@ -110,7 +83,7 @@ EOX
         expected_data[:storage] = expected_data[:storage_domains].first[:id]
 
         expect(@vm).to receive(:create_disk).once.with(expected_data)
-        @template.send(:create_new_disks_from_template, @vm, {})
+        template.send(:create_new_disks_from_template, @vm, {})
       end
 
       it "with a storage override" do
@@ -119,14 +92,14 @@ EOX
         expected_data.merge!(options)
 
         expect(@vm).to receive(:create_disk).once.with(expected_data)
-        @template.send(:create_new_disks_from_template, @vm, options)
+        template.send(:create_new_disks_from_template, @vm, options)
       end
     end
 
     context "build_clone_xml" do
       it "Properly sets vm/cpu/topology attributes" do
         allow(Ovirt::Base).to receive(:object_to_id)
-        xml     = @template.send(:build_clone_xml, :name => "Blank", :cluster => "6b8f1c1e-3eb0-11e4-8420-56847afe9799")
+        xml     = template.send(:build_clone_xml, :name => "Blank", :cluster => "6b8f1c1e-3eb0-11e4-8420-56847afe9799")
         nodeset = Nokogiri::XML.parse(xml).xpath("//vm/cpu/topology")
         node    = nodeset.first
 
