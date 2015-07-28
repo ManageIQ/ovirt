@@ -208,7 +208,7 @@ module Ovirt
     def self.all_xml_objects(service)
       response = service.resource_get(api_endpoint)
       doc      = Nokogiri::XML(response)
-      objects  = doc.xpath("//#{element_names}/#{element_name}")
+      doc.xpath("//#{element_names}/#{element_name}")
     end
 
     def self.all(service)
