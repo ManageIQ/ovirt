@@ -58,9 +58,9 @@ module Ovirt
       attributes[:disks] = send(:disks, :disk) if self[:disks].nil?
       disks.each_with_index do |disk, idx|
         storage_domain = disk[:storage_domains].first
-        storage_id = storage_domain && storage_domain[:id]
-        disk_key = disk[:image_id].blank? ? :id : :image_id
-        file_path = storage_id && ::File.join('/dev', storage_id, disk[disk_key])
+        storage_id     = storage_domain && storage_domain[:id]
+        disk_key       = disk[:image_id].blank? ? :id : :image_id
+        file_path      = storage_id && ::File.join('/dev', storage_id, disk[disk_key])
 
         tag = "scsi0:#{idx}"
         cfg_hash["#{tag}.present"]    = "true"
