@@ -45,6 +45,7 @@ module Ovirt
     end
 
     def getCfg(_snap = nil)
+      # TODO: Remove the following MiqException and any others
       raise MiqException::MiqVimError, "Failed to retrieve configuration information for VM" if attributes.nil?
 
       cfg_hash = {}
