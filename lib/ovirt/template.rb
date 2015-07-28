@@ -45,7 +45,6 @@ module Ovirt
     end
 
     def getCfg(_snap = nil)
-      # mor = snap ? getSnapMor(snap) : @vmMor
       raise MiqException::MiqVimError, "Failed to retrieve configuration information for VM" if attributes.nil?
 
       cfg_hash = {}
@@ -67,7 +66,6 @@ module Ovirt
         cfg_hash["#{tag}.devicetype"] = "disk"
         cfg_hash["#{tag}.filename"]   = file_path.to_s
         cfg_hash["#{tag}.format"]     = disk[:format]
-        # cfg_hash["#{tag}.mode"] = dev['backing']['diskMode']
       end
       cfg_hash
     end
