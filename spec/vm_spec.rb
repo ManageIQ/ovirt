@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe Ovirt::Vm do
   let(:service) { vm.service }
   let(:vm)      { build(:vm_full) }
@@ -49,7 +47,7 @@ EOX
           expected_data = @base_data
           options = @base_options.merge(boolean_key => true)
 
-          service.should_receive(:resource_post).once.with(@resource_url, expected_data)
+          expect(service).to receive(:resource_post).once.with(@resource_url, expected_data)
           vm.create_disk(options)
         end
 
@@ -57,7 +55,7 @@ EOX
           expected_data = @base_data.gsub("<#{boolean_key.to_s}>true</#{boolean_key.to_s}>", "<#{boolean_key.to_s}>false</#{boolean_key.to_s}>")
           options = @base_options.merge(boolean_key => false)
 
-          service.should_receive(:resource_post).once.with(@resource_url, expected_data)
+          expect(service).to receive(:resource_post).once.with(@resource_url, expected_data)
           vm.create_disk(options)
         end
 
@@ -66,7 +64,7 @@ EOX
           options = @base_options.dup
           options.delete(boolean_key)
 
-          service.should_receive(:resource_post).once.with(@resource_url, expected_data)
+          expect(service).to receive(:resource_post).once.with(@resource_url, expected_data)
           vm.create_disk(options)
         end
       end
@@ -91,21 +89,21 @@ EOX
 
     it "populates the interface" do
       interface = 'interface'
-      service.should_receive(:resource_post).once.with(
+      expect(service).to receive(:resource_post).once.with(
           @resource_url, expected_data("<interface>#{interface}</interface>"))
       vm.create_nic(@base_options.merge({:interface => interface}))
     end
 
     it "populates the network id" do
       network_id = 'network_id'
-      service.should_receive(:resource_post).once.with(
+      expect(service).to receive(:resource_post).once.with(
           @resource_url, expected_data("<network id=\"#{network_id}\"/>"))
       vm.create_nic(@base_options.merge({:network_id => network_id}))
     end
 
     it "populates the MAC address" do
       mac_address = 'mac_address'
-      service.should_receive(:resource_post).once.with(
+      expect(service).to receive(:resource_post).once.with(
           @resource_url, expected_data("<mac address=\"#{mac_address}\"/>"))
       vm.create_nic(@base_options.merge({:mac_address => mac_address}))
     end
@@ -131,7 +129,7 @@ EOX
 </vm>
 EOX
 
-      service.should_receive(:resource_put).once.with(
+      expect(service).to receive(:resource_put).once.with(
           vm.attributes[:href],
           expected_data).and_return(return_data)
       vm.memory_reserve = memory_reserve
@@ -149,12 +147,12 @@ EOX
 EOX
 
       rest_client = double('rest_client').as_null_object
-      rest_client.should_receive(:post) do |&block|
-        return_data.stub(:code).and_return(409)
+      expect(rest_client).to receive(:post) do |&block|
+        allow(return_data).to receive(:code).and_return(409)
         block.call(return_data)
       end
 
-      service.stub(:create_resource).and_return(rest_client)
+      allow(service).to receive(:create_resource).and_return(rest_client)
       expect { vm.stop }.to raise_error Ovirt::VmIsNotRunning
     end
   end
@@ -194,8 +192,8 @@ EOX
   </memory_policy>
 </vm>
 EOX
-        service.should_receive(:version).twice.and_return(:major=>"3", :minor=>"0", :build=>"0", :revision=>"0")
-        service.should_receive(:resource_put).once.with(vm.attributes[:href], expected_data).and_return(return_data)
+        expect(service).to receive(:version).twice.and_return(:major=>"3", :minor=>"0", :build=>"0", :revision=>"0")
+        expect(service).to receive(:resource_put).once.with(vm.attributes[:href], expected_data).and_return(return_data)
         vm.detach_floppy
       end
 
@@ -224,8 +222,8 @@ EOX
   </memory_policy>
 </vm>
 EOX
-        service.should_receive(:version).and_return(:major=>"3", :minor=>"3", :build=>"0", :revision=>"0")
-        service.should_receive(:resource_put).once.with(vm.attributes[:href], expected_data).and_return(return_data)
+        expect(service).to receive(:version).and_return(:major=>"3", :minor=>"3", :build=>"0", :revision=>"0")
+        expect(service).to receive(:resource_put).once.with(vm.attributes[:href], expected_data).and_return(return_data)
         vm.detach_floppy
       end
     end
