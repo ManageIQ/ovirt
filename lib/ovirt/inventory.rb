@@ -131,9 +131,9 @@ module Ovirt
     # > secondary_item_jobs({:vm, => [v1, v2]})
     #  => [[v1, :disks], [v1, :snapshots], [v1, :nics], [v2, :disks], [v2, :snapshots], [v2, :nics]]
     def secondary_item_jobs(primary_items)
-      SECONDARY_ITEMS.collect do |key, methods|
+      SECONDARY_ITEMS.flat_map do |key, methods|
         primary_items[key].product(methods)
-      end.flatten(1)
+      end
     end
 
     def collect_primary_items
