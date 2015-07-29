@@ -1,5 +1,8 @@
 module Ovirt
   class Base
+    extend Logging
+    include Logging
+
     def self.create_from_xml(service, xml)
       new(service, parse_xml(xml))
     end

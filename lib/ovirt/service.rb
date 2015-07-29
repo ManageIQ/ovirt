@@ -2,6 +2,8 @@ require 'nokogiri'
 
 module Ovirt
   class Service
+    include Logging
+
     DEFAULT_OPTIONS  = {}
     REQUIRED_OPTIONS = [:server, :username, :password]
     DEFAULT_PORT_3_0 = 8443
@@ -159,12 +161,12 @@ module Ovirt
         else
           partial_xml = Nokogiri::XML(partial_xml_str)
           break if partial_xml.root.children.count == 0
-          $rhevm_log.debug "#{log_header}: Combining resource elements for <#{path}> from page:<#{page}>" if $rhevm_log && $rhevm_log.debug?
+          logger.debug "#{log_header}: Combining resource elements for <#{path}> from page:<#{page}>"
           full_xml.root << partial_xml.root.children
         end
         page += 1
       end
-      $rhevm_log.debug "#{log_header}: Combined elements for <#{path}>.  Total elements:<#{full_xml.root.children.count}>" if $rhevm_log && $rhevm_log.debug?
+      logger.debug "#{log_header}: Combined elements for <#{path}>.  Total elements:<#{full_xml.root.children.count}>"
       full_xml
     end
 
@@ -195,8 +197,8 @@ module Ovirt
       log_header = "#{self.class.name}#resource_#{verb}"
 
       resource = create_resource(path)
-      $rhevm_log.info "#{log_header}: Sending URL: <#{resource.url}>" if $rhevm_log
-      $rhevm_log.debug "#{log_header}: With args: <#{args.inspect}>" if $rhevm_log.try(:debug?)
+      logger.info "#{log_header}: Sending URL: <#{resource.url}>"
+      logger.debug "#{log_header}: With args: <#{args.inspect}>"
       resource.send(verb, *args) do |response, request, result, &block|
         case response.code
         when 200
@@ -217,22 +219,15 @@ module Ovirt
     rescue RestClient::ResourceNotFound, Ovirt::Error
       raise
     rescue Exception => e
-      msg = "#{log_header}: class = #{e.class.name}, message=#{e.message}, URI=#{resource ? resource.url : path}"
-      if $rhevm_log.nil?
-        puts msg
-      else
-        $rhevm_log.error msg
-      end
+      logger.error("#{log_header}: class = #{e.class.name}, message=#{e.message}, URI=#{resource ? resource.url : path}")
       raise
     end
 
     def parse_normal_response(response, resource)
       parse_set_cookie_header(response.headers[:set_cookie])
-      if $rhevm_log
-        log_header = "#{self.class.name}#parse_normal_response"
-        $rhevm_log.info  "#{log_header}: Return from URL: <#{resource.url}> Data length:#{response.length}"
-        $rhevm_log.debug "#{log_header}: Return from URL: <#{resource.url}> Data:#{response}" if $rhevm_log.debug?
-      end
+      log_header = "#{self.class.name}#parse_normal_response"
+      logger.info  "#{log_header}: Return from URL: <#{resource.url}> Data length:#{response.length}"
+      logger.debug "#{log_header}: Return from URL: <#{resource.url}> Data:#{response}"
       response
     end
 

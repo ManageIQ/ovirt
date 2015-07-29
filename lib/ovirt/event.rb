@@ -13,7 +13,7 @@ module Ovirt
       hash[:name] = EVENT_CODES[hash[:code]]
       unless hash[:name]
         hash[:name] = "UNKNOWN"
-        $rhevm_log.warn "MIQ(#{name}.#{__method__}) Unknown RHEVM event #{hash[:code]}: #{hash[:description]}"
+        logger.warn("#{name}.#{__method__} Unknown RHEVM event #{hash[:code]}: #{hash[:description]}")
       end
     end
     private_class_method :set_event_name
