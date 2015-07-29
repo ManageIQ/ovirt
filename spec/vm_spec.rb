@@ -45,7 +45,7 @@ EOX
       context "xml #{boolean_key} value" do
         it "set to true" do
           expected_data = @base_data
-          options = @base_options.merge(boolean_key => true)
+          options       = @base_options.merge(boolean_key => true)
 
           expect(service).to receive(:resource_post).once.with(@resource_url, expected_data)
           vm.create_disk(options)
@@ -53,7 +53,7 @@ EOX
 
         it "set to false" do
           expected_data = @base_data.gsub("<#{boolean_key}>true</#{boolean_key}>", "<#{boolean_key}>false</#{boolean_key}>")
-          options = @base_options.merge(boolean_key => false)
+          options       = @base_options.merge(boolean_key => false)
 
           expect(service).to receive(:resource_post).once.with(@resource_url, expected_data)
           vm.create_disk(options)
@@ -61,7 +61,7 @@ EOX
 
         it "unset" do
           expected_data = @base_data.gsub("  <#{boolean_key}>true</#{boolean_key}>\n", "")
-          options = @base_options.dup
+          options       = @base_options.dup
           options.delete(boolean_key)
 
           expect(service).to receive(:resource_post).once.with(@resource_url, expected_data)
@@ -112,7 +112,7 @@ EOX
   context "#memory_reserve" do
     it "updates the memory policy guarantee" do
       memory_reserve = 1.gigabyte
-      expected_data = <<-EOX.chomp
+      expected_data  = <<-EOX.chomp
 <vm>
   <memory_policy>
     <guaranteed>#{memory_reserve}</guaranteed>

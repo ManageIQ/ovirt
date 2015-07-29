@@ -4,7 +4,7 @@ describe Ovirt::Template do
 
   context "#create_vm" do
     it "clones properties for skeletal clones" do
-      options = {:clone_type => :skeletal}
+      options       = {:clone_type => :skeletal}
       expected_data = {
         :clone_type        => :linked,
         :memory            => 536_870_912,
@@ -17,7 +17,7 @@ describe Ovirt::Template do
         :os_type           => "rhel5_64"}
       allow(template).to receive(:nics).and_return([])
       allow(template).to receive(:disks).and_return([])
-      allow(service).to receive(:blank_template).and_return(double('blank template'))
+      allow(service).to  receive(:blank_template).and_return(double('blank template'))
       expect(service.blank_template).to receive(:create_vm).once.with(expected_data)
       template.create_vm(options)
     end
@@ -86,7 +86,7 @@ EOX
 
       it "with a storage override" do
         expected_data = @disk.attributes.dup
-        options = {:storage => "xxxxxxxx-40d0-43e2-a605-92ce6ba652a8"}
+        options       = {:storage => "xxxxxxxx-40d0-43e2-a605-92ce6ba652a8"}
         expected_data.merge!(options)
 
         expect(@vm).to receive(:create_disk).once.with(expected_data)

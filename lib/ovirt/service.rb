@@ -26,7 +26,7 @@ module Ovirt
       @options = DEFAULT_OPTIONS.merge(options)
       parse_domain_name
       REQUIRED_OPTIONS.each { |key| raise "No #{key} specified" unless @options.key?(key) }
-      @password = @options.delete(:password)
+      @password   = @options.delete(:password)
       @session_id = @options[:session_id]
     end
 
@@ -97,10 +97,10 @@ module Ovirt
     end
 
     def get_resource_by_ems_ref(uri_suffix, element_name = nil)
-      xml     = resource_get(uri_suffix)
-      doc     = Nokogiri::XML(xml)
+      xml            = resource_get(uri_suffix)
+      doc            = Nokogiri::XML(xml)
       element_name ||= doc.root.name
-      klass   = self.class.name_to_class(element_name)
+      klass          = self.class.name_to_class(element_name)
       xml_to_object(klass, doc.root)
     end
 
@@ -112,17 +112,16 @@ module Ovirt
         doc = Nokogiri::XML(xml)
       end
       element_name ||= uri_suffix.singularize
-      klass   = self.class.name_to_class(element_name)
+      klass          = self.class.name_to_class(element_name)
 
       xml_path = uri_suffix == 'api' ? element_name : "#{element_name.pluralize}/#{element_name}"
-      objects = doc.xpath("//#{xml_path}")
+      objects  = doc.xpath("//#{xml_path}")
       objects.collect { |obj| xml_to_object(klass, obj) }
     end
 
     def status(link)
       response = resource_get(link)
-
-      node = Base.xml_to_nokogiri(response)
+      node     = Base.xml_to_nokogiri(response)
       node.xpath('status/state').text
     end
 
@@ -151,8 +150,8 @@ module Ovirt
 
     def paginate_resource_get(path = nil, sort_by = :name, direction = :asc)
       log_header = "#{self.class.name}#paginate_resource_get"
-      page = 1
-      full_xml = nil
+      page       = 1
+      full_xml   = nil
       loop do
         uri = "#{path}?search=sortby%20#{sort_by}%20#{direction}%20page%20#{page}"
         partial_xml_str = resource_get(uri)
@@ -195,8 +194,7 @@ module Ovirt
 
     def resource_verb(path, verb, *args)
       log_header = "#{self.class.name}#resource_#{verb}"
-
-      resource = create_resource(path)
+      resource   = create_resource(path)
       logger.info "#{log_header}: Sending URL: <#{resource.url}>"
       logger.debug "#{log_header}: With args: <#{args.inspect}>"
       resource.send(verb, *args) do |response, request, result, &block|

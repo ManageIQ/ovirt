@@ -3,9 +3,9 @@ module Ovirt
     self.top_level_strings = [:name, :description, :type, :unit]
 
     def self.parse_node_extended(node, hash)
-      values_node          = node.xpath('values').first
-      values_type          = values_node['type']
-      values = values_node.xpath('value').collect do |v|
+      values_node = node.xpath('values').first
+      values_type = values_node['type']
+      values      = values_node.xpath('value').collect do |v|
         datum = v.xpath('datum').text
         case values_type
         when 'INTEGER'
@@ -17,7 +17,7 @@ module Ovirt
         end
         datum
       end
-      hash[:values]        = values
+      hash[:values] = values
 
       [:vm, :nic, :disk].each do |type|
         parent_node = node.xpath(type.to_s).first

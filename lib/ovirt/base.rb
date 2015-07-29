@@ -18,7 +18,7 @@ module Ovirt
     end
 
     def self.xml_to_actions(xml)
-      node = xml_to_nokogiri(xml)
+      node    = xml_to_nokogiri(xml)
       actions = {}
       node.xpath('actions/link').each do |link|
         actions[link['rel'].to_sym] = link['href']
@@ -41,7 +41,7 @@ module Ovirt
 
     def self.parse_first_text(node, hash, key, modifier = nil)
       text_node = node.xpath(key.to_s).first
-      value = text_node.text unless text_node.nil?
+      value     = text_node.text unless text_node.nil?
       set_value(value, hash, key, modifier)
     end
 
@@ -232,8 +232,8 @@ module Ovirt
 
     def self.find_by_href(service, href)
       response = service.resource_get(href)
-      doc = Nokogiri::XML(response)
-      xml = doc.xpath("//#{element_name}").first
+      doc      = Nokogiri::XML(response)
+      xml      = doc.xpath("//#{element_name}").first
       create_from_xml(service, xml)
     rescue RestClient::ResourceNotFound
       return nil
