@@ -82,8 +82,8 @@ module Ovirt
       options[:storage] = Base.object_to_id(options[:storage]) if options[:storage]
 
       case options[:clone_type]
-      when :full then     clone_to_vm(options)
-      when :linked then   clone_to_vm(options)
+      when :full     then clone_to_vm(options)
+      when :linked   then clone_to_vm(options)
       when :skeletal then clone_to_vm_via_blank_template(options)
       end
     end

@@ -6,7 +6,7 @@ describe Ovirt::Service do
   context "#resource_post" do
     it "raises Ovirt::Error if HTTP 409 response code received" do
       error_detail = "API error"
-      return_data = <<-EOX.chomp
+      return_data  = <<-EOX.chomp
 <action>
     <fault>
         <detail>#{error_detail}</detail>
@@ -26,7 +26,7 @@ EOX
 
     it "raises Ovirt::Error if HTTP 409 response code received" do
       error_detail = "Usage message"
-      return_data = <<-EOX.chomp
+      return_data  = <<-EOX.chomp
 <usage_message>
   <message>#{error_detail}</message>
 </usage_message>

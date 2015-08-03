@@ -74,7 +74,7 @@ module Ovirt
       #     <state>pending</state>
       #   </status>
       # </action>
-      doc = Nokogiri::XML(response)
+      doc    = Nokogiri::XML(response)
       action = doc.xpath("//action").first
       raise Ovirt::Error, "No Action in Response: #{response.inspect}" if action.nil?
       action['href']
@@ -320,12 +320,10 @@ module Ovirt
           xml.description desc
         end
       end
-      data = builder.doc.root.to_xml
-      path = "#{api_endpoint}/snapshots"
-
+      data     = builder.doc.root.to_xml
+      path     = "#{api_endpoint}/snapshots"
       response = @service.resource_post(path, data)
-
-      snap = Snapshot.create_from_xml(@service, response)
+      snap     = Snapshot.create_from_xml(@service, response)
 
       while snap[:snapshot_status] == "locked"
         sleep 2
@@ -341,9 +339,9 @@ module Ovirt
           xml.vm(:id => self[:id])
         end
       end
-      data = builder.doc.root.to_xml
-
+      data     = builder.doc.root.to_xml
       response = @service.resource_post(:templates, data)
+
       Template.create_from_xml(@service, response)
     rescue Ovirt::Error => err
       raise TemplateAlreadyExists, err.message if err.message.include?("Template name already exists")
@@ -356,10 +354,9 @@ module Ovirt
       ovirt_cloud_init_keys = %w(active_directory_ou authorized_ssh_keys dns_search dns_servers domain host_name input_locale nic_configurations org_name regenerate_ssh_keys root_password system_locale timezone ui_language user_locale user_name)
 
       require 'yaml'
-      raw_content = YAML.load(content)
-
-      hash = ovirt_cloud_init_keys.each_with_object({}) { |k, h| h[k] = raw_content.delete(k) }
-      custom_script = YAML.dump(raw_content).to_s.sub("---\n", "")
+      raw_content          = YAML.load(content)
+      hash                 = ovirt_cloud_init_keys.each_with_object({}) { |k, h| h[k] = raw_content.delete(k) }
+      custom_script        = YAML.dump(raw_content).to_s.sub("---\n", "")
       hash[:custom_script] = custom_script unless custom_script.blank?
       hash.delete_nils
     end
