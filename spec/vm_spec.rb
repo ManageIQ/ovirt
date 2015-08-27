@@ -109,6 +109,64 @@ EOX
     end
   end
 
+  context "#boot_order" do
+    it "with a single string, updates the boot order" do
+      devices = 'hd'
+      expected_data  = <<-EOX.chomp
+<vm>
+  <os>
+    <boot dev="hd"/>
+  </os>
+</vm>
+EOX
+
+      return_data = <<-EOX.chomp
+<vm>
+  <os type='dummy'>
+    <boot dev="hd"/>
+  </os>
+  <placement_policy>
+    <affinity>dummy</affinity>
+  </placement_policy>
+</vm>
+EOX
+
+      expect(service).to receive(:resource_put).once.with(
+        vm.attributes[:href],
+        expected_data).and_return(return_data)
+      vm.boot_order = devices
+    end
+
+    it "with an array of strings, updates the boot order" do
+      devices = ['network', 'hd']
+      expected_data  = <<-EOX.chomp
+<vm>
+  <os>
+    <boot dev="network"/>
+    <boot dev="hd"/>
+  </os>
+</vm>
+EOX
+
+      return_data = <<-EOX.chomp
+<vm>
+  <os type='dummy'>
+    <boot dev="network"/>
+    <boot dev="hd"/>
+  </os>
+  <placement_policy>
+    <affinity>dummy</affinity>
+  </placement_policy>
+</vm>
+EOX
+
+      expect(service).to receive(:resource_put).once.with(
+        vm.attributes[:href],
+        expected_data).and_return(return_data)
+      vm.boot_order = devices
+    end
+  end
+
   context "#memory_reserve" do
     it "updates the memory policy guarantee" do
       memory_reserve = 1.gigabyte

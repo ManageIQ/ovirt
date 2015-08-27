@@ -80,6 +80,17 @@ module Ovirt
       action['href']
     end
 
+    def boot_order=(devices)
+      devices = [devices].flatten
+      update! do |xml|
+        xml.os do
+          devices.each do |d|
+            xml.boot(:dev => d)
+          end
+        end
+      end
+    end
+
     # cpu_hash needs to look like { :cores => 1, :sockets => 1 }
     def cpu_topology=(cpu_hash)
       update! do |xml|
