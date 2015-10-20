@@ -199,7 +199,7 @@ module Ovirt
       logger.debug "#{log_header}: With args: <#{args.inspect}>"
       resource.send(verb, *args) do |response, request, result, &block|
         case response.code
-        when 200
+        when 200..206
           parse_normal_response(response, resource)
         when 400, 409
           parse_error_response(response)
