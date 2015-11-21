@@ -165,12 +165,9 @@ module Ovirt
     end
 
     def self.xml_to_nokogiri(xml)
-      if xml.kind_of?(Nokogiri::XML::Element)
-        nokogiri = xml
-      else
-        nokogiri = Nokogiri::XML(xml).root
-      end
-      nokogiri
+      return xml if xml.kind_of?(Nokogiri::XML::Element)
+
+      Nokogiri::XML(xml).root
     end
 
     def self.href_from_creation_status_link(link)
