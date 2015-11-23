@@ -367,8 +367,7 @@ module Ovirt
       require 'yaml'
       raw_content          = YAML.load(content)
       hash                 = ovirt_cloud_init_keys.each_with_object({}) { |k, h| h[k] = raw_content.delete(k) }
-      custom_script        = YAML.dump(raw_content).to_s.sub("---\n", "")
-      hash[:custom_script] = custom_script unless custom_script.blank?
+      hash[:custom_script] = YAML.dump(raw_content).sub("---\n", "") if raw_content.present?
       hash.delete_nils
     end
   end

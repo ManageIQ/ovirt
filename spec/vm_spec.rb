@@ -287,26 +287,9 @@ EOX
     end
   end
 
-  it "cloud_init= Ovirt 3.4 and newer" do
-    cloud_config = <<-EOCC.chomp
-#cloud_config
-regenerate_ssh_keys: false
-root_password: some_password
-fqdn: example.example.com
-debug: True
-EOCC
-
-    expected_data = <<-EOX.chomp
-<vm>
-  <initialization>
-    <regenerate_ssh_keys>false</regenerate_ssh_keys>
-    <root_password>some_password</root_password>
-    <custom_script>fqdn: example.example.com\ndebug: true\n</custom_script>
-  </initialization>
-</vm>
-EOX
-
-    return_data = <<-EOX.chomp
+  context "#cloud_init= Ovirt 3.4 and newer" do
+    let(:return_data) do
+      <<-EOX.chomp
 <vm href="/api/vms/128f9ffd-b82c-41e4-8c00-9742ed173bac" id="128f9ffd-b82c-41e4-8c00-9742ed173bac">
   <name>bd-skeletal-clone-from-template</name>
   <cpu>
@@ -325,9 +308,51 @@ EOX
   </memory_policy>
 </vm>
 EOX
+    end
 
-    expect(service).to receive(:api).and_return(:product_info => {:version => {:major => "3", :minor => "4", :revision => "0", :build => "0"}})
-    expect(service).to receive(:resource_put).once.with(vm.attributes[:href], expected_data).and_return(return_data)
-    vm.cloud_init = cloud_config
+    it "with custom_script" do
+      cloud_config = <<-EOCC.chomp
+#cloud_config
+regenerate_ssh_keys: false
+root_password: some_password
+fqdn: example.example.com
+debug: True
+EOCC
+
+      expected_data = <<-EOX.chomp
+<vm>
+  <initialization>
+    <regenerate_ssh_keys>false</regenerate_ssh_keys>
+    <root_password>some_password</root_password>
+    <custom_script>fqdn: example.example.com\ndebug: true\n</custom_script>
+  </initialization>
+</vm>
+EOX
+
+      expect(service).to receive(:api).and_return(:product_info => {:version => {:major => "3", :minor => "4", :revision => "0", :build => "0"}})
+      expect(service).to receive(:resource_put).once.with(vm.attributes[:href], expected_data).and_return(return_data)
+      vm.cloud_init = cloud_config
+    end
+
+    it "without custom_script" do
+      cloud_config = <<-EOCC.chomp
+#cloud_config
+regenerate_ssh_keys: false
+root_password: some_password
+EOCC
+
+      expected_data = <<-EOX.chomp
+<vm>
+  <initialization>
+    <regenerate_ssh_keys>false</regenerate_ssh_keys>
+    <root_password>some_password</root_password>
+  </initialization>
+</vm>
+EOX
+
+      expect(service).to receive(:api).and_return(:product_info => {:version => {:major => "3", :minor => "4", :revision => "0", :build => "0"}})
+      expect(service).to receive(:resource_put).once.with(vm.attributes[:href], expected_data).and_return(return_data)
+      vm.cloud_init = cloud_config
+    end
   end
 end
