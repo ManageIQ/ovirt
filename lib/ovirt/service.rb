@@ -52,7 +52,8 @@ module Ovirt
     end
 
     def version
-      @version ||= product_info[:version]
+      # HACK: using full_version if available due to version being wrong, https://bugzilla.redhat.com/show_bug.cgi?id=1284654
+      @version ||= full_version || product_info[:version]
     end
 
     def version_string
@@ -335,6 +336,13 @@ module Ovirt
           @options[:domain], @options[:username] = username.split('/')
         end
       end
+    end
+
+    def full_version
+      v = product_info[:full_version]
+      return if v.blank?
+      v = v.sub("-", ".").split(".")[0..3]
+      [:major, :minor, :revision, :build].zip(v).to_h
     end
   end
 end

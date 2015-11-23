@@ -2,7 +2,7 @@ module Ovirt
   class Api < Base
     def self.parse_node_extended(node, hash)
       parse_first_node(node, :product_info, hash,
-                       :node => [:name, :vendor])
+                       :node => [:name, :vendor, :full_version])
 
       parse_first_node_with_hash(node, 'product_info/version', hash[:product_info][:version] = {},
                                  :attribute => [:major, :minor, :build, :revision])
