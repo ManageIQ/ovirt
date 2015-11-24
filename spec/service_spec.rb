@@ -101,4 +101,16 @@ EOX
       expect(subject).to eq("https://nobody.com:443")
     end
   end
+
+  context "#version" do
+    it "with :full_version" do
+      allow(service).to receive(:product_info).and_return(:full_version => "3.4.5-0.3.el6ev", :version => {:major => "3", :minor => "4", :build => "0", :revision => "0"})
+      expect(service.version).to eq(:major => "3", :minor => "4", :revision => "5", :build => "0")
+    end
+
+    it "without :full_version" do
+      allow(service).to receive(:product_info).and_return(:version => {:major => "3", :minor => "4", :build => "0", :revision => "0"})
+      expect(service.version).to eq(:major => "3", :minor => "4", :revision => "0", :build => "0")
+    end
+  end
 end
