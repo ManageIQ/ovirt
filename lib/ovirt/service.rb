@@ -342,7 +342,7 @@ module Ovirt
       v = product_info[:full_version]
       return if v.blank?
       v = v.sub("-", ".").split(".")[0..3]
-      [:major, :minor, :revision, :build].zip(v).to_h
+      Hash[[:major, :minor, :revision, :build].zip(v)]
     end
   end
 end
