@@ -54,6 +54,11 @@ EOX
       expect(described_class.ovirt?(:server => "127.0.0.1")).to be false
     end
 
+    it "false when invalid content encoding returned" do
+      expect_any_instance_of(described_class).to receive(:engine_ssh_public_key).and_raise(NoMethodError)
+      expect(described_class.ovirt?(:server => "127.0.0.1")).to be false
+    end
+
     it "true when key non-empty" do
       fake_key = "ssh-rsa " + ("A" * 372) + " ovirt-engine\n"
       expect_any_instance_of(described_class).to receive(:engine_ssh_public_key).and_return(fake_key)

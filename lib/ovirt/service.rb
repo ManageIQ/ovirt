@@ -140,7 +140,7 @@ module Ovirt
     def self.ovirt?(options)
       options[:username] = options[:password] = "_unused"
       !new(options).engine_ssh_public_key.to_s.blank?
-    rescue RestClient::ResourceNotFound
+    rescue RestClient::ResourceNotFound, NoMethodError
       false
     end
 
