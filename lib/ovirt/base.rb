@@ -319,7 +319,7 @@ module Ovirt
 
     def update
       builder = Nokogiri::XML::Builder.new do |xml|
-        xml.send(namespace.last.downcase) { yield xml if block_given? }
+        xml.send(self.class.namespace.last.downcase) { yield xml if block_given? }
       end
       data = builder.doc.root.to_xml
 
