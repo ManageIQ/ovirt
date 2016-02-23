@@ -14,4 +14,12 @@ describe Ovirt::Base do
     expect(Ovirt::Base.send(:href_to_guid, guid)).to                    eq(guid)
     expect { Ovirt::Base.send(:href_to_guid, 12_345) }.to               raise_error(ArgumentError)
   end
+
+  it "#update" do
+    vm = build(:vm)
+
+    expect(vm.service).to receive(:resource_put).with("vms/", "<vm>\n  <description>test description</description>\n</vm>")
+
+    vm.update { |x| x.description("test description") }
+  end
 end
