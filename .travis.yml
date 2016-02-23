@@ -6,6 +6,9 @@ rvm:
 - "2.2"
 - ruby-head
 - jruby-head
+sudo: false
+cache: bundler
+before_install: gem install bundler -v 1.10.3
 matrix:
   allow_failures:
   - rvm: ruby-head
