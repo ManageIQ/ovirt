@@ -3,6 +3,7 @@ module Ovirt
   class Error < StandardError; end
 
   # Existence
+  class MissingResourceError < Error; end
   class TemplateAlreadyExists < Error; end
   class VmAlreadyExists < Error; end
 

@@ -202,7 +202,7 @@ module Ovirt
         case response.code
         when 200..206
           parse_normal_response(response, resource)
-        when 400, 409
+        when 400..409
           parse_error_response(response)
         else
           response.return!(request, result, &block)
@@ -231,6 +231,7 @@ module Ovirt
     end
 
     def parse_error_response(response)
+      raise Ovirt::MissingResourceError if response.code == 404
       doc    = Nokogiri::XML(response)
       action = doc.xpath("action").first
       node   = action || doc
