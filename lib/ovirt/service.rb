@@ -203,7 +203,7 @@ module Ovirt
         when 200..206
           parse_normal_response(response, resource)
         when 400..409
-          parse_error_response(response)
+          parse_error_response(response, resource)
         else
           response.return!(request, result, &block)
         end
@@ -230,7 +230,8 @@ module Ovirt
       response
     end
 
-    def parse_error_response(response)
+    def parse_error_response(response, resource)
+      logger.error "#{self.class.name}#parse_error_response Return from URL: <#{resource.url}> Data:#{response}"
       raise Ovirt::MissingResourceError if response.code == 404
       doc    = Nokogiri::XML(response)
       action = doc.xpath("action").first
