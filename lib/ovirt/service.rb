@@ -10,6 +10,7 @@ module Ovirt
     DEFAULT_PORT_3_1 =  443
     DEFAULT_PORT     = DEFAULT_PORT_3_1
     DEFAULT_SCHEME   = 'https'.freeze
+    DEFAULT_API_VERSION = 'v3'
     SESSION_ID_KEY   = 'JSESSIONID'.freeze
 
     attr_accessor :session_id
@@ -127,11 +128,13 @@ module Ovirt
     end
 
     def api_uri(path = nil)
-      uri = "#{base_uri}/api"
+      uri = "#{base_uri}"
+      uri += api_version == 'v4' ? '/ovirt-engine/api' : '/api'
       unless path.nil?
         parts = path.to_s.split('/')
-        parts.shift if parts.first == ''    # Remove leading slash
-        parts.shift if parts.first == 'api' # We already have /api in our URI
+        parts.shift if parts.first == ''             # Remove leading slash
+        parts.shift if parts.first == 'ovirt-engine' # We already have /ovirt-engine in our URI
+        parts.shift if parts.first == 'api'          # We already have /api in our URI
         uri += "/#{parts.join('/')}" unless parts.empty?
       end
       uri
@@ -327,6 +330,10 @@ module Ovirt
 
     def verify_ssl
       @options[:verify_ssl]
+    end
+
+    def api_version
+      @options[:api_version] || DEFAULT_API_VERSION
     end
 
     # Parse domain out of the username string
