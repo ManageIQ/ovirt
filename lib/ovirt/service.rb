@@ -277,7 +277,10 @@ module Ovirt
     end
 
     def resource_options
-      headers = merge_headers('Prefer' => 'persistent-auth')
+      headers = merge_headers(
+        'Version' => '3',
+        'Prefer'  => 'persistent-auth',
+      )
       options = {}
 
       if session_id
