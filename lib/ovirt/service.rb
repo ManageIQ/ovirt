@@ -1,4 +1,7 @@
 require 'nokogiri'
+require 'openssl'
+require 'rest-client'
+require 'uri'
 
 module Ovirt
   class Service
@@ -11,6 +14,12 @@ module Ovirt
     DEFAULT_PORT     = DEFAULT_PORT_3_1
     DEFAULT_SCHEME   = 'https'.freeze
     SESSION_ID_KEY   = 'JSESSIONID'.freeze
+
+    # The list of absolute URI paths where the API can be available:
+    CANDIDATE_API_PATHS = [
+      '/api',
+      '/ovirt-engine/api',
+    ].freeze
 
     attr_accessor :session_id
 
@@ -28,6 +37,7 @@ module Ovirt
       REQUIRED_OPTIONS.each { |key| raise "No #{key} specified" unless @options.key?(key) }
       @password   = @options.delete(:password)
       @session_id = @options[:session_id]
+      @api_path   = @options[:path]
     end
 
     def inspect # just like the default inspect, but WITHOUT @password
@@ -145,8 +155,40 @@ module Ovirt
       node.xpath('status/state').text
     end
 
+    # Checks if the API is available in the given candidate path. It does so sending a request without
+    # authentication. If the API is available there it will respond with the "WWW-Autenticate" header
+    # and with the "RESTAPI" or "ENGINE" realm.
+    def probe_api_path(uri, path)
+      uri = URI.join(uri, path)
+      request = RestClient::Resource.new(uri.to_s, :verify_ssl => OpenSSL::SSL::VERIFY_NONE)
+      begin
+        request.get
+      rescue RestClient::Exception => exception
+        response = exception.response
+        if response.code == 401
+          www_authenticate = response.headers[:www_authenticate]
+          if www_authenticate =~ /^Basic realm="?(RESTAPI|ENGINE)"?$/
+            return true
+          end
+        end
+      end
+      false
+    end
+
+    # Probes all the candidate paths of the API, and returns the first that success. If all probes
+    # fail, then the first candidate will be returned.
+    def find_api_path(uri)
+      CANDIDATE_API_PATHS.detect { |path| probe_api_path(uri, path) } || CANDIDATE_API_PATHS.first
+    end
+
+    # Returns the path of the API, probing it if needed.
+    def api_path
+      @api_path ||= find_api_path(base_uri)
+    end
+
     def api_uri(path = nil)
-      uri = "#{base_uri}/api"
+      # Calculate the complete URI:
+      uri = URI.join(base_uri, api_path).to_s
       unless path.nil?
         parts = path.to_s.split('/')
         parts.shift if parts.first == ''    # Remove leading slash
@@ -164,7 +206,6 @@ module Ovirt
     end
 
     def engine_ssh_public_key
-      require "rest-client"
       RestClient::Resource.new("#{base_uri}/engine.ssh.key.txt", resource_options).get
     end
 
@@ -206,7 +247,6 @@ module Ovirt
     end
 
     def create_resource(path = nil)
-      require "rest-client"
       RestClient::Resource.new(api_uri(path), resource_options)
     end
 
@@ -270,7 +310,6 @@ module Ovirt
     end
 
     def base_uri
-      require 'uri'
       uri = URI::Generic.build(:scheme => scheme.to_s, :port => port)
       uri.hostname = server
       uri.to_s
