@@ -68,6 +68,11 @@ module Ovirt
       api(true)[:summary] # This is volatile information
     end
 
+    def ca_certificate
+      require "rest-client"
+      @ca_certificate || = RestClient::Resource.new("#{base_uri}/ca.crt", resource_options).get
+    end
+
     def special_objects
       @special_objects ||= api[:special_objects]
     end

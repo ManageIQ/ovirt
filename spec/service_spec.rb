@@ -43,6 +43,20 @@ EOX
     end
   end
 
+  describe "#ca_certificate" do
+    subject { service.ca_certificate }
+
+    it 'calls the rest client to download the certificate' do
+      cert = "-----BEGIN CERTIFICATE-----"
+      klass = stub_const("RestClient::Resource", double)
+      instance = double
+      expect(service).to receive(:base_uri)
+      expect(klass).to receive(:new).and_return(instance)
+      expect(instance).to receive(:get).and_return(cert)
+      expect(subject).to eq(cert)
+    end
+  end
+
   it "#resource_get on exception" do
     allow(service).to receive(:create_resource).and_raise(Exception, "BLAH")
     expect { service.resource_get('api') }.to raise_error(Exception, "BLAH")
