@@ -44,15 +44,12 @@ EOX
   end
 
   describe "#ca_certificate" do
+    let(:service) { build(:service, :server => "test.example.com") }
     subject { service.ca_certificate }
 
     it 'calls the rest client to download the certificate' do
       cert = "-----BEGIN CERTIFICATE-----"
-      klass = stub_const("RestClient::Resource", double)
-      instance = double
-      expect(service).to receive(:base_uri)
-      expect(klass).to receive(:new).and_return(instance)
-      expect(instance).to receive(:get).and_return(cert)
+      allow_any_instance_of(RestClient::Resource).to receive(:get).and_return(cert)
       expect(subject).to eq(cert)
     end
   end
