@@ -48,6 +48,45 @@ EOX
     expect { service.resource_get('api') }.to raise_error(Exception, "BLAH")
   end
 
+  context "#get_resource_by_ems_ref" do
+    it "fetches data_center" do
+      return_message = <<-EOX.chomp
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<data_center href="/api/datacenters/00000001-0001-0001-0001-0000000000f1" id="00000001-0001-0001-0001-0000000000f1">
+    <name>Default</name>
+    <description>The default Data Center</description>
+    <link href="/api/datacenters/00000001-0001-0001-0001-0000000000f1/storagedomains" rel="storagedomains"/>
+    <link href="/api/datacenters/00000001-0001-0001-0001-0000000000f1/clusters" rel="clusters"/>
+    <link href="/api/datacenters/00000001-0001-0001-0001-0000000000f1/networks" rel="networks"/>
+    <link href="/api/datacenters/00000001-0001-0001-0001-0000000000f1/permissions" rel="permissions"/>
+    <link href="/api/datacenters/00000001-0001-0001-0001-0000000000f1/quotas" rel="quotas"/>
+    <link href="/api/datacenters/00000001-0001-0001-0001-0000000000f1/qoss" rel="qoss"/>
+    <link href="/api/datacenters/00000001-0001-0001-0001-0000000000f1/iscsibonds" rel="iscsibonds"/>
+    <local>false</local>
+    <storage_format>v3</storage_format>
+    <version major="3" minor="6"/>
+    <supported_versions>
+        <version major="3" minor="6"/>
+    </supported_versions>
+    <status>
+        <state>up</state>
+    </status>
+    <mac_pool href="/api/macpools/0000000d-000d-000d-000d-00000000037a" id="0000000d-000d-000d-000d-00000000037a"/>
+    <quota_mode>disabled</quota_mode>
+</data_center>
+EOX
+      expect(service).to receive(:resource_get).and_return(return_message)
+
+      data_center = service.get_resource_by_ems_ref("/api/datacenters/00000001-0001-0001-0001-0000000000f1")
+      expect(data_center[0].name).to eq "Default"
+    end
+
+    it "returns 404" do
+      expect(service).to receive(:resource_get).and_raise(Ovirt::MissingResourceError)
+      expect { service.get_resource_by_ems_ref("/api/vms/1234") }.to raise_error(Ovirt::MissingResourceError)
+    end
+  end
+
   context ".ovirt?" do
     it "false when ResourceNotFound" do
       expect_any_instance_of(described_class).to receive(:engine_ssh_public_key).and_raise(RestClient::ResourceNotFound)

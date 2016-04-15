@@ -90,8 +90,13 @@ module Ovirt
     def refresh
       # TODO: Change to not return native objects to the caller.  The caller
       #       should just expect raw data.
-      primary_items = collect_primary_items
-      collect_secondary_items(primary_items)
+      primary_items = collect_primary_jobs(primary_item_jobs)
+      collect_secondary_items(primary_items, SECONDARY_ITEMS)
+    end
+
+    def targeted_refresh(methods)
+      primary_items = collect_primary_targeted_jobs(methods[:primary].to_a)
+      collect_secondary_items(primary_items, methods[:secondary])
     end
 
     private
@@ -130,15 +135,13 @@ module Ovirt
     #
     # > secondary_item_jobs({:vm, => [v1, v2]})
     #  => [[v1, :disks], [v1, :snapshots], [v1, :nics], [v2, :disks], [v2, :snapshots], [v2, :nics]]
-    def secondary_item_jobs(primary_items)
-      SECONDARY_ITEMS.flat_map do |key, methods|
+    def secondary_item_jobs(primary_items, secondary_items)
+      secondary_items.flat_map do |key, methods|
         primary_items[key].product(methods)
       end
     end
 
-    def collect_primary_items
-      jobs = primary_item_jobs
-
+    def collect_primary_jobs(jobs)
       results = collect_in_parallel(jobs) do |_, method|
         send(method)
       end
@@ -148,8 +151,18 @@ module Ovirt
       end
     end
 
-    def collect_secondary_items(primary_items)
-      jobs = secondary_item_jobs(primary_items)
+    def collect_primary_targeted_jobs(jobs)
+      results = collect_in_parallel(jobs) do |key, ems_ref|
+        get_resource_by_ems_ref(ems_ref, key.to_s)
+      end
+
+      jobs.zip(results).each_with_object({}) do |((key, _), result), hash|
+        hash[key] = result
+      end
+    end
+
+    def collect_secondary_items(primary_items, secondary_items)
+      jobs = secondary_item_jobs(primary_items, secondary_items)
 
       results = collect_in_parallel(jobs) do |resource, method|
         resource.send(method) rescue nil

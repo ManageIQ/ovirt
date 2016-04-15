@@ -102,7 +102,8 @@ module Ovirt
       doc            = Nokogiri::XML(xml)
       element_name ||= doc.root.name
       klass          = self.class.name_to_class(element_name)
-      xml_to_object(klass, doc.root)
+      objects        = doc.xpath("//#{element_name}")
+      objects.collect { |obj| xml_to_object(klass, obj) }
     end
 
     def standard_collection(uri_suffix, element_name = nil, paginate = false, sort_by = :name, direction = :asc)
