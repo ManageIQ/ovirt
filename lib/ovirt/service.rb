@@ -68,6 +68,24 @@ module Ovirt
       api(true)[:summary] # This is volatile information
     end
 
+    def ca_certificate
+      @ca_certificate ||= verify_certificate(get_ca_certificate)
+    end
+
+    def verify_certificate(certificate)
+      return if certificate.to_s.strip.empty?
+
+      require 'openssl'
+      OpenSSL::X509::Certificate.new(certificate).to_s
+    rescue OpenSSL::X509::CertificateError
+    end
+
+    def get_ca_certificate
+      require "rest-client"
+      RestClient::Resource.new("#{base_uri}/ca.crt", resource_options).get
+    rescue RestClient::ResourceNotFound
+    end
+
     def special_objects
       @special_objects ||= api[:special_objects]
     end
