@@ -9,6 +9,7 @@ module Ovirt
     DEFAULT_PORT_3_0 = 8443
     DEFAULT_PORT_3_1 =  443
     DEFAULT_PORT     = DEFAULT_PORT_3_1
+    DEFAULT_PREFIX   = '/api'
     DEFAULT_SCHEME   = 'https'.freeze
     SESSION_ID_KEY   = 'JSESSIONID'.freeze
 
@@ -146,7 +147,7 @@ module Ovirt
     end
 
     def api_uri(path = nil)
-      uri = "#{base_uri}/api"
+      uri = "#{base_uri}#{prefix}"
       unless path.nil?
         parts = path.to_s.split('/')
         parts.shift if parts.first == ''    # Remove leading slash
@@ -320,6 +321,10 @@ module Ovirt
 
     def port
       @options[:port] || DEFAULT_PORT
+    end
+
+    def prefix
+      @options[:prefix] || DEFAULT_PREFIX
     end
 
     def fully_qualified_username
