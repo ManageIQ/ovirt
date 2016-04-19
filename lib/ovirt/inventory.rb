@@ -99,6 +99,10 @@ module Ovirt
       collect_secondary_items(primary_items, methods[:secondary])
     end
 
+    def api_path
+      @service.api_path
+    end
+
     private
 
     def standard_collection(uri_suffix, element_name = nil, paginate = false, sort_by = :name, direction = :asc)
