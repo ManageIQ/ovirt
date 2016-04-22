@@ -87,6 +87,10 @@ module Ovirt
       @service.get_resource_by_ems_ref(uri_suffix, element_name)
     end
 
+    def get_resources_by_uri_path(uri_suffix, element_name = nil)
+      @service.get_resources_by_uri_path(uri_suffix, element_name)
+    end
+
     def refresh
       # TODO: Change to not return native objects to the caller.  The caller
       #       should just expect raw data.
@@ -157,7 +161,7 @@ module Ovirt
 
     def collect_primary_targeted_jobs(jobs)
       results = collect_in_parallel(jobs) do |key, ems_ref|
-        get_resource_by_ems_ref(ems_ref, key.to_s)
+        get_resources_by_uri_path(ems_ref, key.to_s)
       end
 
       jobs.zip(results).each_with_object({}) do |((key, _), result), hash|

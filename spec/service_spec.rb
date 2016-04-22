@@ -108,7 +108,7 @@ EOC
     expect { service.resource_get('api') }.to raise_error(Exception, "BLAH")
   end
 
-  context "#get_resource_by_ems_ref" do
+  context "#get_resources_by_uri_path" do
     it "fetches data_center" do
       return_message = <<-EOX.chomp
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -137,13 +137,13 @@ EOC
 EOX
       expect(service).to receive(:resource_get).and_return(return_message)
 
-      data_center = service.get_resource_by_ems_ref("/api/datacenters/00000001-0001-0001-0001-0000000000f1")
+      data_center = service.get_resources_by_uri_path("/api/datacenters/00000001-0001-0001-0001-0000000000f1")
       expect(data_center[0].name).to eq "Default"
     end
 
     it "returns 404" do
       expect(service).to receive(:resource_get).and_raise(Ovirt::MissingResourceError)
-      expect { service.get_resource_by_ems_ref("/api/vms/1234") }.to raise_error(Ovirt::MissingResourceError)
+      expect { service.get_resources_by_uri_path("/api/vms/1234") }.to raise_error(Ovirt::MissingResourceError)
     end
   end
 
