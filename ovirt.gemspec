@@ -36,5 +36,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "more_core_extensions"
   spec.add_dependency "nokogiri"
   spec.add_dependency "parallel"
-  spec.add_dependency "rest-client", ">= 1.7.2"
+  spec.add_dependency "rest-client", ">= 2.0.0.rc1"
 end

@@ -264,7 +264,7 @@ module Ovirt
         when 400..409
           parse_error_response(response, resource)
         else
-          response.return!(request, result, &block)
+          response.return!(&block)
         end
       end
     rescue RestClient::Unauthorized
