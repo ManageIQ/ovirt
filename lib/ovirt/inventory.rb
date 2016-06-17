@@ -130,7 +130,7 @@ module Ovirt
     SECONDARY_ITEMS = {
       # Key          RHEVM API methods
       :datacenter => [:storagedomains],
-      :host       => [:statistics, :host_nics], # :cdroms, tags
+      :host       => [:statistics, :nics], # :cdroms, tags
       :vm         => [:disks, :snapshots, :nics],
       :template   => [:disks]
     }
@@ -161,7 +161,7 @@ module Ovirt
 
     def collect_primary_targeted_jobs(jobs)
       results = collect_in_parallel(jobs) do |key, ems_ref|
-        get_resources_by_uri_path(ems_ref, key.to_s)
+        get_resources_by_uri_path(ems_ref, key.to_s) rescue Array.new
       end
 
       jobs.zip(results).each_with_object({}) do |((key, _), result), hash|
