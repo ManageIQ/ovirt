@@ -197,10 +197,17 @@ module Ovirt
     def api_uri(path = nil)
       # Calculate the complete URI:
       uri = URI.join(base_uri, api_path).to_s
+
+      # The path passed to this method will have the "/api" prefix if it comes from the "ems_ref"
+      # attribute stored in the database, and will have the "/ovirt-engine/api" if it comes directly
+      # from the "href" attribute of the XML documents, for example when using the "relationships"
+      # method to fetch secondary objects related to the primary object. This means that to have
+      # a clean path we need to remove both "ovirt-engine" and "api".
       unless path.nil?
         parts = path.to_s.split('/')
-        parts.shift if parts.first == ''    # Remove leading slash
-        parts.shift if parts.first == 'api' # We already have /api in our URI
+        parts.shift if parts.first == ''
+        parts.shift if parts.first == 'ovirt-engine'
+        parts.shift if parts.first == 'api'
         uri += "/#{parts.join('/')}" unless parts.empty?
       end
       uri
