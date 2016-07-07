@@ -13,9 +13,9 @@ describe Ovirt::Vm do
         :interface         => "virtio",
         :format            => "raw",
         :image_id          => "a791ba77-8cc1-44de-9945-69f0a291cc47",
-        :size              => 10_737_418_240,
-        :provisioned_size  => 10_737_418_240,
-        :actual_size       => 1_316_855_808,
+        :size              => 10_737_418_240, # 10.gigabytes
+        :provisioned_size  => 10_737_418_240, # 10.gigabytes
+        :actual_size       => 1_316_855_808,  # 1255.megabytes
         :sparse            => true,
         :bootable          => true,
         :wipe_after_delete => true,
@@ -169,7 +169,7 @@ EOX
 
   context "#memory_reserve" do
     it "updates the memory policy guarantee" do
-      memory_reserve = 1.gigabyte
+      memory_reserve = 1_073_741_824 # 1.gigabyte
       expected_data  = <<-EOX.chomp
 <vm>
   <memory_policy>
