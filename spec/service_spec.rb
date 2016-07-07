@@ -206,6 +206,29 @@ EOX
     end
   end
 
+  context "#api_uri" do
+    BASE_URI = "https://nobody.com"
+    API_PATH = "/ovirt-engine/api"
+
+    before do
+      expect(service).to receive(:base_uri).and_return(BASE_URI)
+      expect(service).to receive(:api_path).and_return(API_PATH)
+    end   
+
+    it "removes slash" do
+      expect(service.api_uri("/vms/123")).to eq("#{BASE_URI}#{API_PATH}/vms/123")
+    end
+
+    it "removes /api" do
+      expect(service.api_uri("/api/vms/123")).to eq("#{BASE_URI}#{API_PATH}/vms/123")
+    end
+
+    it "removes /ovirt-engine/api" do
+      expect(service.api_uri("/ovirt-engine/api/vms/123")).to eq("#{BASE_URI}#{API_PATH}/vms/123")
+    end
+
+  end
+
   context "#version" do
     it "with :full_version" do
       allow(service).to receive(:product_info).and_return(:full_version => "3.4.5-0.3.el6ev", :version => {:major => "3", :minor => "4", :build => "0", :revision => "0"})
