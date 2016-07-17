@@ -124,6 +124,10 @@ module Ovirt
 
     def memory=(value)
       update! do |xml|
+        xml.memory_policy do
+          xml.guaranteed(value)
+        end
+
         xml.memory value
       end
     end
