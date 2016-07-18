@@ -26,7 +26,7 @@ def print_object(base, caption, indent = 0, recurse = true)
         puts "#{indentation}Ignoring #{rel} relationship due to ovirt error: #{err}"
       rescue RestClient::InternalServerError => err
         puts_caption(new_caption, indentation)
-        puts "#{indentation}Ignoring #{rel} relationship due to rest client error: #{err}"
+        puts "#{indentation}Ignoring #{rel} relationship due to rest client error: #{err.response}"
       end
     end
   end
