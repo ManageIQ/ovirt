@@ -44,6 +44,10 @@ module Ovirt
       attributes.fetch_path(:os, :type) || 'unassigned'
     end
 
+    def boot_order
+      attributes.fetch_path(:os, :boot_order) || []
+    end
+
     def getCfg(_snap = nil)
       # TODO: Remove the following MiqException and any others
       raise MiqException::MiqVimError, "Failed to retrieve configuration information for VM" if attributes.nil?
@@ -102,7 +106,8 @@ module Ovirt
       (CLONE_ATTRIBUTES_WITH_SCALARS + CLONE_ATTRIBUTES_WITH_HASHES).each do |key|
         options[key] ||= self[key]
       end
-      options[:os_type] ||= os_type
+      options[:os] = self[:os].dup
+      options[:os][:type] = options[:os_type] || os_type
 
       skeleton_options = options.dup
       skeleton_options[:clone_type] = :linked
@@ -152,8 +157,12 @@ module Ovirt
             end
           end
 
-          xml.os(:type => options[:os_type] || os_type) do
-            xml.boot(:dev => 'hd')
+          options_os_type = options.fetch_path(:os, :type) || options[:os_type]
+          xml.os(:type => options_os_type || os_type) do
+            options_boot_order = options.fetch_path(:os, :boot_order)
+            (options_boot_order || boot_order).each do |boot|
+              xml.boot(:dev => boot[:dev])
+            end
           end
 
           if options[:clone_type] == :full
