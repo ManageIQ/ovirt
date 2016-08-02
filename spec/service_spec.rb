@@ -229,6 +229,47 @@ EOX
 
   end
 
+  context "#probe_api_path" do
+    let(:rest_client_resource_double) { double("RestClient::Resource") }
+
+    before do
+      allow(RestClient::Resource).to receive(:new).and_return(rest_client_resource_double)
+    end
+
+    def rest_exception(code = nil, headers = {})
+      response = double('response').as_null_object
+      expect(response).to receive(:code).and_return(code)
+      allow(response).to receive(:headers).and_return(headers)
+      RestClient::Exception.new(response)
+    end
+
+    it "returns false for nil response" do
+      allow(rest_client_resource_double).to receive(:get).and_raise(RestClient::Exception.new)
+      expect(service.probe_api_path('http://some', 'path')).to eq(false)
+    end
+
+    it "returns false for 401 and empty headers" do
+      allow(rest_client_resource_double).to receive(:get).and_raise(rest_exception(401))
+      expect(service.probe_api_path('http://some', 'path')).to eq(false)
+    end
+
+    it "returns false for other code" do
+      allow(rest_client_resource_double).to receive(:get).and_raise(rest_exception(404))
+      expect(service.probe_api_path('http://some', 'path')).to eq(false)
+    end
+
+    it "returns false if no exception thrown" do
+      allow(rest_client_resource_double).to receive(:get)
+      expect(service.probe_api_path('http://some', 'path')).to eq(false)
+    end
+
+    it "returns true for 401 and correct headers" do
+      allow(rest_client_resource_double).to receive(:get).and_raise(
+        rest_exception(401, :www_authenticate => "Basic realm=RESTAPI"))
+      expect(service.probe_api_path('http://some', 'path')).to eq(true)
+    end
+  end
+
   context "#version" do
     it "with :full_version" do
       allow(service).to receive(:product_info).and_return(:full_version => "3.4.5-0.3.el6ev", :version => {:major => "3", :minor => "4", :build => "0", :revision => "0"})
