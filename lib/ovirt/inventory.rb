@@ -130,7 +130,7 @@ module Ovirt
     SECONDARY_ITEMS = {
       # Key          RHEVM API methods
       :datacenter => [:storagedomains],
-      :host       => [:statistics, :nics], # :cdroms, tags
+      :host       => [:statistics, :host_nics], # :cdroms, tags
       :vm         => [:disks, :snapshots, :nics],
       :template   => [:disks]
     }
@@ -177,6 +177,7 @@ module Ovirt
       jobs = secondary_item_jobs(primary_items, secondary_items)
 
       results = collect_in_parallel(jobs) do |resource, method|
+        @service.logger.info("#{resource} #{method}")
         resource.send(method) rescue nil
       end
 
