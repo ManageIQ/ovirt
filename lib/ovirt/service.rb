@@ -173,6 +173,8 @@ module Ovirt
         request.get
       rescue RestClient::Exception => exception
         response = exception.response
+        logger.error "#{self.class.name}#probe_api_path: exception probing uri: '#{uri}'. Exception: #{$ERROR_INFO}"
+        return false if response.nil?
         if response.code == 401
           www_authenticate = response.headers[:www_authenticate]
           if www_authenticate =~ /^Basic realm="?(RESTAPI|ENGINE)"?$/
@@ -307,6 +309,7 @@ module Ovirt
     def parse_error_response(response, resource)
       logger.error "#{self.class.name}#parse_error_response Return from URL: <#{resource.url}> Data:#{response}"
       raise Ovirt::MissingResourceError if response.code == 404
+      raise RestClient::Unauthorized if response.code == 401
       doc    = Nokogiri::XML(response)
       action = doc.xpath("action").first
       node   = action || doc
