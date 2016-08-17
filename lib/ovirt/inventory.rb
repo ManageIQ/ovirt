@@ -130,7 +130,7 @@ module Ovirt
     SECONDARY_ITEMS = {
       # Key          RHEVM API methods
       :datacenter => [:storagedomains],
-      :host       => [:statistics, :nics], # :cdroms, tags
+      :host       => [:statistics, :host_nics], # :cdroms, tags
       :vm         => [:disks, :snapshots, :nics],
       :template   => [:disks]
     }
@@ -163,6 +163,9 @@ module Ovirt
       results = collect_in_parallel(jobs) do |key, ems_ref|
         if ems_ref.kind_of?(Array)
           ems_ref.flat_map { |item| get_resources_by_uri_path(item) rescue Array.new }
+        elsif ems_ref.kind_of?(Hash)
+          collection, element_name = ems_ref.first
+          standard_collection(collection, element_name, true)
         else
           get_resources_by_uri_path(ems_ref) rescue Array.new
         end
