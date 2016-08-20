@@ -54,7 +54,7 @@ module Ovirt
 
       if has_first_node?(node, 'os/version')
         parse_first_node_with_hash(node, 'os/version', hash.store_path(:os, :version, {}),
-                                   :attribute => [:full_version])
+                                   :attribute => [:full_version, :major, :minor, :build])
       end
 
       parse_first_node(node, :libvirt_version, hash,
