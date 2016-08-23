@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.13.0] - 2016-08-23
+### Breaking changes
+- Ovirt::Inventory removed [#68]
+
+### Other changes
+- Add Host version parts [#67]
+
 ## [0.12.1] - 2016-08-17
 ### Bug Fixes
 - Update minimum nokogiri version to resolve CVEs [#66]
