@@ -147,17 +147,62 @@ EOX
     end
   end
 
+  context "#ssh_public_key" do
+    let(:base_uri) { "https://nobody.com" }
+    let(:old_path) { "/engine.ssh.key.txt" }
+    let(:new_path) { "/ovirt-engine/services/pki-resource?resource=engine-certificate&format=OPENSSH-PUBKEY" }
+    let(:ssh_key) { "ssh-rsa " + ("A" * 372) + " ovirt-engine\n" }
+
+    before do
+      allow(service).to receive(:base_uri).and_return(base_uri)
+    end
+
+    it "returns valid key for engine older than 3.5" do
+      old_resource = double("RestClient::Resource")
+      expect(old_resource).to receive(:get).and_return(ssh_key)
+      expect(RestClient::Resource).to receive(:new).with("#{base_uri}#{old_path}", anything).and_return(old_resource)
+
+      new_resource = double("RestClient::Resource")
+      expect(new_resource).to receive(:get).and_raise(RestClient::ResourceNotFound)
+      expect(RestClient::Resource).to receive(:new).with("#{base_uri}#{new_path}", anything).and_return(new_resource)
+
+      expect(service.engine_ssh_public_key).to eql(ssh_key)
+    end
+
+    it "returns valid key for engine 3.5 or newer" do
+      new_resource = double("RestClient::Resource")
+      expect(new_resource).to receive(:get).and_return(ssh_key)
+      expect(RestClient::Resource).to receive(:new).with("#{base_uri}#{new_path}", anything).and_return(new_resource)
+
+      expect(service.engine_ssh_public_key).to eql(ssh_key)
+    end
+
+    it "returns nil if there is no engine" do
+      old_resource = double("RestClient::Resource")
+      expect(old_resource).to receive(:get).and_raise(RestClient::ResourceNotFound)
+      expect(RestClient::Resource).to receive(:new).with("#{base_uri}#{old_path}", anything).and_return(old_resource)
+
+      new_resource = double("RestClient::Resource")
+      expect(new_resource).to receive(:get).and_raise(RestClient::ResourceNotFound)
+      expect(RestClient::Resource).to receive(:new).with("#{base_uri}#{new_path}", anything).and_return(new_resource)
+
+      expect(service.engine_ssh_public_key).to be nil
+    end
+
+    it "returns nil when using a wrong REST client method" do
+      old_resource = double("RestClient::Resource")
+      expect(old_resource).to receive(:get).and_raise(NoMethodError)
+      expect(RestClient::Resource).to receive(:new).with("#{base_uri}#{old_path}", anything).and_return(old_resource)
+
+      new_resource = double("RestClient::Resource")
+      expect(new_resource).to receive(:get).and_raise(NoMethodError)
+      expect(RestClient::Resource).to receive(:new).with("#{base_uri}#{new_path}", anything).and_return(new_resource)
+
+      expect(service.engine_ssh_public_key).to be nil
+    end
+  end
+
   context ".ovirt?" do
-    it "false when ResourceNotFound" do
-      expect_any_instance_of(described_class).to receive(:engine_ssh_public_key).and_raise(RestClient::ResourceNotFound)
-      expect(described_class.ovirt?(:server => "127.0.0.1")).to be false
-    end
-
-    it "false when invalid content encoding returned" do
-      expect_any_instance_of(described_class).to receive(:engine_ssh_public_key).and_raise(NoMethodError)
-      expect(described_class.ovirt?(:server => "127.0.0.1")).to be false
-    end
-
     it "true when key non-empty" do
       fake_key = "ssh-rsa " + ("A" * 372) + " ovirt-engine\n"
       expect_any_instance_of(described_class).to receive(:engine_ssh_public_key).and_return(fake_key)
@@ -166,6 +211,12 @@ EOX
 
     it "false when key empty" do
       fake_key = "\n"
+      expect_any_instance_of(described_class).to receive(:engine_ssh_public_key).and_return(fake_key)
+      expect(described_class.ovirt?(:server => "127.0.0.1")).to be false
+    end
+
+    it "false when key nil" do
+      fake_key = nil
       expect_any_instance_of(described_class).to receive(:engine_ssh_public_key).and_return(fake_key)
       expect(described_class.ovirt?(:server => "127.0.0.1")).to be false
     end

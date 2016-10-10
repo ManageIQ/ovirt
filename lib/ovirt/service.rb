@@ -21,6 +21,16 @@ module Ovirt
       '/ovirt-engine/api',
     ].freeze
 
+    # The list of absolute URI paths where the engine SSH public key can be available (this is used only to detect if
+    # the engine is installed or not):
+    CANDIDATE_SSH_PUBLIC_KEY_PATHS = [
+      # This will work for newer versions of the engine, including 3.5, 3.6 and 4.0:
+      '/ovirt-engine/services/pki-resource?resource=engine-certificate&format=OPENSSH-PUBKEY',
+
+      # This will work for older versions of the engine older thatn 3.5:
+      '/engine.ssh.key.txt',
+    ].freeze
+
     attr_accessor :session_id
 
     def self.name_to_class(name)
@@ -217,13 +227,19 @@ module Ovirt
 
     def self.ovirt?(options)
       options[:username] = options[:password] = "_unused"
-      !new(options).engine_ssh_public_key.to_s.blank?
-    rescue RestClient::ResourceNotFound, NoMethodError
-      false
+      !new(options).engine_ssh_public_key.blank?
     end
 
     def engine_ssh_public_key
-      RestClient::Resource.new("#{base_uri}/engine.ssh.key.txt", resource_options).get
+      CANDIDATE_SSH_PUBLIC_KEY_PATHS.each do |path|
+        begin
+          key = RestClient::Resource.new("#{base_uri}#{path}", resource_options).get
+          return key unless key.blank?
+        rescue RestClient::ResourceNotFound, NoMethodError
+          # Do nothing, just try the next candidate.
+        end
+      end
+      nil
     end
 
     def paginate_resource_get(path = nil, sort_by = :name, direction = :asc)
