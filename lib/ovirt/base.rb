@@ -307,20 +307,21 @@ module Ovirt
       self[:href] || "#{self.class.api_endpoint}/#{self[:id]}"
     end
 
-    def update!(&block)
-      response = update(&block)
+    def update!(matrix = {}, &block)
+      response = update(matrix, &block)
 
       obj = self.class.create_from_xml(@service, response)
       replace(obj)
     end
 
-    def update
+    def update(matrix = {})
       builder = Nokogiri::XML::Builder.new do |xml|
         xml.send(self.class.namespace.last.downcase) { yield xml if block_given? }
       end
       data = builder.doc.root.to_xml
+      suffix = build_matrix_suffix(matrix)
 
-      @service.resource_put(api_endpoint, data)
+      @service.resource_put(api_endpoint + suffix, data)
     end
 
     def keys
@@ -329,6 +330,20 @@ module Ovirt
 
     def [](key)
       @attributes[key]
+    end
+
+    private
+
+    #
+    # Builds the string to be added to the request path for the given matrix parameters. For example, if the given
+    # parameters contain the `next_run` key with the value `true` and the `max` key with the value `10`, then the
+    # resulting string will be `;next_run=true;max=10`.
+    #
+    # @param parameters [Hash] A hash containing the names and values of the matrix parameters.
+    # @return [String] The string to add to the request path.
+    #
+    def build_matrix_suffix(parameters)
+      parameters.map { |key, value| value.nil? ? '' : ";#{key}=#{value}" }.join
     end
   end
 end
