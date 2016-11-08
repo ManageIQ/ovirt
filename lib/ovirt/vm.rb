@@ -122,18 +122,36 @@ module Ovirt
       end
     end
 
-    def memory=(value)
-      update! do |xml|
-        xml.memory value
+    #
+    # Updates the memory of the virtual machine.
+    #
+    # @param memory [Integer] The virtual memory assigned to the virtual machine, in bytes. If it is `nil` then
+    #   the virtual memory won't be updated.
+    #
+    # @param guaranteed [Integer] The amount of physical memory reserved for the virtual machine, in bytes. If
+    #   it is `nil` then the guaranteed memory won't be updated.
+    #
+    # @param matrix [Hash] Optional matrix parameters to pass to the update operation, for example `next_run => true`.
+    #
+    def update_memory(memory, guaranteed, matrix = {})
+      update!(matrix) do |xml|
+        if memory
+          xml.memory memory
+        end
+        if guaranteed
+          xml.memory_policy do
+            xml.guaranteed guaranteed
+          end
+        end
       end
     end
 
+    def memory=(value)
+      update_memory(value, nil)
+    end
+
     def memory_reserve=(value)
-      update! do |xml|
-        xml.memory_policy do
-          xml.guaranteed(value)
-        end
-      end
+      update_memory(nil, value)
     end
 
     def cloud_init=(content)
