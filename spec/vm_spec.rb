@@ -112,7 +112,7 @@ EOX
   context "#boot_order" do
     it "with a single string, updates the boot order" do
       devices = 'hd'
-      expected_data  = <<-EOX.chomp
+      expected_data = <<-EOX.chomp
 <vm>
   <os>
     <boot dev="hd"/>
@@ -139,7 +139,7 @@ EOX
 
     it "with an array of strings, updates the boot order" do
       devices = ['network', 'hd']
-      expected_data  = <<-EOX.chomp
+      expected_data = <<-EOX.chomp
 <vm>
   <os>
     <boot dev="network"/>
@@ -167,10 +167,35 @@ EOX
     end
   end
 
+  context '#memory=' do
+    it 'updates the memory' do
+      memory = 1_073_741_824 # 1.gigabyte
+      expected_data = <<-EOX.chomp
+<vm>
+  <memory>#{memory}</memory>
+</vm>
+EOX
+
+      return_data = <<-EOX.chomp
+<vm>
+  <os type='dummy'/>
+  <placement_policy>
+    <affinity>dummy</affinity>
+  </placement_policy>
+</vm>
+EOX
+
+      expect(service).to receive(:resource_put).once.with(
+        vm.attributes[:href],
+        expected_data).and_return(return_data)
+      vm.memory = memory
+    end
+  end
+
   context "#memory_reserve" do
     it "updates the memory policy guarantee" do
       memory_reserve = 1_073_741_824 # 1.gigabyte
-      expected_data  = <<-EOX.chomp
+      expected_data = <<-EOX.chomp
 <vm>
   <memory_policy>
     <guaranteed>#{memory_reserve}</guaranteed>
@@ -191,6 +216,110 @@ EOX
         vm.attributes[:href],
         expected_data).and_return(return_data)
       vm.memory_reserve = memory_reserve
+    end
+  end
+
+  context '#update_memory' do
+    it 'updates only "memory" if "guaranteed" is nil' do
+      memory = 1_073_741_824 # 1.gigabyte
+      guaranteed = nil
+      expected_data = <<-EOX.chomp
+<vm>
+  <memory>#{memory}</memory>
+</vm>
+EOX
+
+      return_data = <<-EOX.chomp
+<vm>
+  <os type='dummy'/>
+  <placement_policy>
+    <affinity>dummy</affinity>
+  </placement_policy>
+</vm>
+EOX
+
+      expect(service).to receive(:resource_put).once.with(
+        vm.attributes[:href],
+        expected_data).and_return(return_data)
+      vm.update_memory(memory, guaranteed)
+    end
+
+    it 'updates only "guaranteed" if "memory" is nil' do
+      memory = nil
+      guaranteed = 1_073_741_824 # 1.gigabyte
+      expected_data = <<-EOX.chomp
+<vm>
+  <memory_policy>
+    <guaranteed>#{guaranteed}</guaranteed>
+  </memory_policy>
+</vm>
+EOX
+
+      return_data = <<-EOX.chomp
+<vm>
+  <os type='dummy'/>
+  <placement_policy>
+    <affinity>dummy</affinity>
+  </placement_policy>
+</vm>
+EOX
+
+      expect(service).to receive(:resource_put).once.with(
+        vm.attributes[:href],
+        expected_data).and_return(return_data)
+      vm.update_memory(memory, guaranteed)
+    end
+
+    it 'updates both if both are not nil' do
+      memory = 1_073_741_824 # 1.gigabyte
+      guaranteed = 1_073_741_824 # 1.gigabyte
+      expected_data = <<-EOX.chomp
+<vm>
+  <memory>#{memory}</memory>
+  <memory_policy>
+    <guaranteed>#{guaranteed}</guaranteed>
+  </memory_policy>
+</vm>
+EOX
+
+      return_data = <<-EOX.chomp
+<vm>
+  <os type='dummy'/>
+  <placement_policy>
+    <affinity>dummy</affinity>
+  </placement_policy>
+</vm>
+EOX
+
+      expect(service).to receive(:resource_put).once.with(
+        vm.attributes[:href],
+        expected_data).and_return(return_data)
+      vm.update_memory(memory, guaranteed)
+    end
+
+    it 'adds the "next_run=true" matrix parameter correctly' do
+      memory = 1_073_741_824 # 1.gigabyte
+      guaranteed = nil
+      expected_data = <<-EOX.chomp
+<vm>
+  <memory>#{memory}</memory>
+</vm>
+EOX
+
+      return_data = <<-EOX.chomp
+<vm>
+  <os type='dummy'/>
+  <placement_policy>
+    <affinity>dummy</affinity>
+  </placement_policy>
+</vm>
+</vm>
+EOX
+
+      expect(service).to receive(:resource_put).once.with(
+        vm.attributes[:href] + ';next_run=true',
+        expected_data).and_return(return_data)
+      vm.update_memory(memory, guaranteed, :next_run => true)
     end
   end
 
