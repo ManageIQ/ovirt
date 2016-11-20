@@ -258,24 +258,24 @@ EOX
   end
 
   context "#api_uri" do
-    BASE_URI = "https://nobody.com"
-    API_PATH = "/ovirt-engine/api"
+    let(:base_uri) { "https://nobody.com" }
+    let(:api_path) { "/ovirt-engine/api" }
 
     before do
-      expect(service).to receive(:base_uri).and_return(BASE_URI)
-      expect(service).to receive(:api_path).and_return(API_PATH)
+      expect(service).to receive(:base_uri).and_return(base_uri)
+      expect(service).to receive(:api_path).and_return(api_path)
     end   
 
     it "removes slash" do
-      expect(service.api_uri("/vms/123")).to eq("#{BASE_URI}#{API_PATH}/vms/123")
+      expect(service.api_uri("/vms/123")).to eq("#{base_uri}#{api_path}/vms/123")
     end
 
     it "removes /api" do
-      expect(service.api_uri("/api/vms/123")).to eq("#{BASE_URI}#{API_PATH}/vms/123")
+      expect(service.api_uri("/api/vms/123")).to eq("#{base_uri}#{api_path}/vms/123")
     end
 
     it "removes /ovirt-engine/api" do
-      expect(service.api_uri("/ovirt-engine/api/vms/123")).to eq("#{BASE_URI}#{API_PATH}/vms/123")
+      expect(service.api_uri("/ovirt-engine/api/vms/123")).to eq("#{base_uri}#{api_path}/vms/123")
     end
 
   end
