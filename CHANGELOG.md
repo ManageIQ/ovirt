@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.14.0] - 2016-11-21
+### Other changes
+- Fix discovery of oVirt v4 [#69]
+- Allow passing params to Base#update, Update Vm#memory & Vm#guaranteed in one call to Vm#update_memory [#72]
+- Update event map [#71]
+
 ## [0.13.0] - 2016-08-23
 ### Breaking changes
 - Ovirt::Inventory removed [#68]
