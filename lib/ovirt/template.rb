@@ -27,7 +27,9 @@ module Ovirt
                        :attribute => [:type],
                        :node      => [:kernel, :initrd, :cmdline])
 
-      hash[:os][:boot_order] = boot_order = []
+      boot_order = []
+      hash[:os] = { :boot_order => boot_order }
+
       # Collect boot order
       node.xpath('os/boot').each do |boot|
         dev = boot['dev']
