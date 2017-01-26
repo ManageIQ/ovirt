@@ -1,6 +1,7 @@
 require 'nokogiri'
 require 'openssl'
 require 'rest-client'
+require 'tempfile'
 require 'uri'
 
 module Ovirt
@@ -41,6 +42,17 @@ module Ovirt
       klass.create_from_xml(self, xml)
     end
 
+    #
+    # Creates a new logical connection to the server.
+    #
+    # @param options [Hash] The options used to create the instance.
+    #
+    # @option options [String] :ca_certs A string containing the trusted CA certificates, in PEM format. Multiple
+    #   certificates can be provided concatenating them as a single string. If this option isn't provided then
+    #   the system wide trusted CA certificates will be used.
+    #
+    # Note that there are other options that aren't documented yet.
+    #
     def initialize(options = {})
       @options = DEFAULT_OPTIONS.merge(options)
       parse_domain_name
@@ -48,6 +60,16 @@ module Ovirt
       @password   = @options.delete(:password)
       @session_id = @options[:session_id]
       @api_path   = @options[:path]
+      @ca_certs   = @options[:ca_certs]
+
+      # Create a temporary file to store the CA certificates. This file will be deleted when the 'disconnect' method
+      # is called, or, if that is never called, when the Ruby process finishes.
+      @ca_file = nil
+      if @ca_certs
+        @ca_file = Tempfile.new('ca_file')
+        @ca_file.write(@ca_certs)
+        @ca_file.close
+      end
     end
 
     def inspect # just like the default inspect, but WITHOUT @password
@@ -133,6 +155,8 @@ module Ovirt
     end
 
     def disconnect
+      # Remove the temporary file that was created to store the trusted CA certificates:
+      @ca_file.unlink if @ca_file
     end
 
     def get_resource_by_ems_ref(uri_suffix, element_name = nil)
@@ -367,6 +391,7 @@ module Ovirt
       options[:timeout]      = timeout      if timeout
       options[:open_timeout] = open_timeout if open_timeout
       options[:verify_ssl]   = verify_ssl   unless verify_ssl.nil?
+      options[:ssl_ca_file]  = @ca_file.path if @ca_file
       options
     end
 
