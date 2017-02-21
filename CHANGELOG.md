@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.15.0] - 2017-02-21
+### Breaking changes
+- Drop support for Ruby 2.0 [#75]
+
+### Other changes
+- Allow connection to use CA Certificates [#77]
+- Support parsing templates without an OS [#76]
+
 ## [0.14.0] - 2016-11-21
 ### Other changes
 - Fix discovery of oVirt v4 [#69]
