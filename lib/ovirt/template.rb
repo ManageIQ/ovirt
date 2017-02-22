@@ -28,7 +28,7 @@ module Ovirt
                        :node      => [:kernel, :initrd, :cmdline])
 
       boot_order = []
-      hash[:os] = { :boot_order => boot_order }
+      hash.store_path(:os, :boot_order, boot_order)
 
       # Collect boot order
       node.xpath('os/boot').each do |boot|
