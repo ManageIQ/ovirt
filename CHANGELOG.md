@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.15.1] - 2017-02-22
+### Bug Fixes
+- Prevent template[:os][:type] being overwritten [#78]
+
 ## [0.15.0] - 2017-02-21
 ### Breaking changes
 - Drop support for Ruby 2.0 [#75]
