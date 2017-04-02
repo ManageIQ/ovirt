@@ -304,6 +304,9 @@ module Ovirt
         gi.xpath('ips/ip').each do |ip|
           ips << {:address => ip[:address]}
         end
+
+        fqdn = gi.xpath('fqdn').text
+        hash[:guest_info][:fqdn] = fqdn unless fqdn.blank?
       end
 
       hash
