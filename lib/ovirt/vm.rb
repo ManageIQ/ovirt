@@ -181,10 +181,9 @@ module Ovirt
     def payload_version
       version = service.version
 
-      if version[:major].to_i >= 3
-        return "3_0" if version[:minor].to_i < 3
-        return "3_3"
-      end
+      # Note that in this context "3_3" actually means 3.3 *or newer*, including 3.6 and 4.0.
+      return "3_0" if version[:major].to_i == 3 && version[:minor].to_i < 3
+      "3_3"
     end
 
     def attach_payload_3_0(payloads)

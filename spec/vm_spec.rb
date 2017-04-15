@@ -484,4 +484,31 @@ EOX
       vm.cloud_init = cloud_config
     end
   end
+
+  context "#payload_version" do
+    it "returns 3_0 for version older than 3.3" do
+      expect(service).to receive(:version).and_return(:major => "3", :minor => "1")
+      expect(vm.payload_version).to eql("3_0")
+    end
+
+    it "returns 3_3 for version equal to 3.3" do
+      expect(service).to receive(:version).and_return(:major => "3", :minor => "3")
+      expect(vm.payload_version).to eql("3_3")
+    end
+
+    it "returns 3_3 for version 3.6" do
+      expect(service).to receive(:version).and_return(:major => "3", :minor => "6")
+      expect(vm.payload_version).to eql("3_3")
+    end
+
+    it "returns 3_3 for version 4.0" do
+      expect(service).to receive(:version).and_return(:major => "4", :minor => "0")
+      expect(vm.payload_version).to eql("3_3")
+    end
+
+    it "returns 3_3 for version 4.1" do
+      expect(service).to receive(:version).and_return(:major => "4", :minor => "1")
+      expect(vm.payload_version).to eql("3_3")
+    end
+  end
 end
