@@ -1,3 +1,3 @@
 module Ovirt
-  VERSION = "0.15.1".freeze
+  VERSION = "0.16.0".freeze
 end

@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.16.0] - 2017-04-21
+### Bug Fixes
+- Fix handling of version 4.y in Vm.attach_payload [#80]
+
+### Other changes
+- Add VM FQDN to guest_info [#79]
+
 ## [0.15.1] - 2017-02-22
 ### Bug Fixes
 - Prevent template[:os][:type] being overwritten [#78]
