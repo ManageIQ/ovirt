@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.description   = %q{Ovirt provides a simple Object Oriented interface to the REST API of oVirt and RHEV-M servers.}
   spec.summary       = %q{Ovirt provides a simple Object Oriented interface to the REST API of oVirt and RHEV-M servers.}
   spec.homepage      = "http://github.com/ManageIQ/ovirt"
-  spec.license       = "Apache"
+  spec.license       = "Apache-2.0"
 
 
   spec.files         = `git ls-files -- lib/*`.split("\n")
