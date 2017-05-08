@@ -109,36 +109,53 @@ EOC
   end
 
   context "#get_resources_by_uri_path" do
-    it "fetches data_center" do
-      return_message = <<-EOX.chomp
+    let(:return_message) do
+      <<-EOX.chomp
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <data_center href="/api/datacenters/00000001-0001-0001-0001-0000000000f1" id="00000001-0001-0001-0001-0000000000f1">
-    <name>Default</name>
-    <description>The default Data Center</description>
-    <link href="/api/datacenters/00000001-0001-0001-0001-0000000000f1/storagedomains" rel="storagedomains"/>
-    <link href="/api/datacenters/00000001-0001-0001-0001-0000000000f1/clusters" rel="clusters"/>
-    <link href="/api/datacenters/00000001-0001-0001-0001-0000000000f1/networks" rel="networks"/>
-    <link href="/api/datacenters/00000001-0001-0001-0001-0000000000f1/permissions" rel="permissions"/>
-    <link href="/api/datacenters/00000001-0001-0001-0001-0000000000f1/quotas" rel="quotas"/>
-    <link href="/api/datacenters/00000001-0001-0001-0001-0000000000f1/qoss" rel="qoss"/>
-    <link href="/api/datacenters/00000001-0001-0001-0001-0000000000f1/iscsibonds" rel="iscsibonds"/>
-    <local>false</local>
-    <storage_format>v3</storage_format>
+  <name>Default</name>
+  <description>The default Data Center</description>
+  <link href="/api/datacenters/00000001-0001-0001-0001-0000000000f1/storagedomains" rel="storagedomains"/>
+  <link href="/api/datacenters/00000001-0001-0001-0001-0000000000f1/clusters" rel="clusters"/>
+  <link href="/api/datacenters/00000001-0001-0001-0001-0000000000f1/networks" rel="networks"/>
+  <link href="/api/datacenters/00000001-0001-0001-0001-0000000000f1/permissions" rel="permissions"/>
+  <link href="/api/datacenters/00000001-0001-0001-0001-0000000000f1/quotas" rel="quotas"/>
+  <link href="/api/datacenters/00000001-0001-0001-0001-0000000000f1/qoss" rel="qoss"/>
+  <link href="/api/datacenters/00000001-0001-0001-0001-0000000000f1/iscsibonds" rel="iscsibonds"/>
+  <local>false</local>
+  <storage_format>v3</storage_format>
+  <version major="3" minor="6"/>
+  <supported_versions>
     <version major="3" minor="6"/>
-    <supported_versions>
-        <version major="3" minor="6"/>
-    </supported_versions>
-    <status>
-        <state>up</state>
-    </status>
-    <mac_pool href="/api/macpools/0000000d-000d-000d-000d-00000000037a" id="0000000d-000d-000d-000d-00000000037a"/>
-    <quota_mode>disabled</quota_mode>
+  </supported_versions>
+  <status>
+    <state>up</state>
+  </status>
+  <mac_pool href="/api/macpools/0000000d-000d-000d-000d-00000000037a" id="0000000d-000d-000d-000d-00000000037a"/>
+  <quota_mode>disabled</quota_mode>
 </data_center>
-EOX
+      EOX
+    end
+
+    it "fetches data_center" do
       expect(service).to receive(:resource_get).and_return(return_message)
 
       data_center = service.get_resources_by_uri_path("/api/datacenters/00000001-0001-0001-0001-0000000000f1")
       expect(data_center[0].name).to eq "Default"
+    end
+
+    it "fetches data_center by xpath" do
+      expect(service).to receive(:resource_get).and_return(return_message)
+
+      data_centers = service.get_resources_by_uri_path("/api/datacenters/00000001-0001-0001-0001-0000000000f1", nil, "//data_center")
+      expect(data_centers[0].name).to eq "Default"
+    end
+
+    it "fetches no data_centers by invalid xpath" do
+      expect(service).to receive(:resource_get).and_return(return_message)
+
+      data_centers = service.get_resources_by_uri_path("/api/datacenters/00000001-0001-0001-0001-0000000000f1", nil, "/xyz")
+      expect(data_centers).to eq []
     end
 
     it "returns 404" do

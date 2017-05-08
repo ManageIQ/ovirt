@@ -167,12 +167,13 @@ module Ovirt
       xml_to_object(klass, doc.root)
     end
 
-    def get_resources_by_uri_path(uri_suffix, element_name = nil)
+    def get_resources_by_uri_path(uri_suffix, element_name = nil, xpath = nil)
       xml            = resource_get(uri_suffix)
       doc            = Nokogiri::XML(xml)
       element_name ||= doc.root.name
       klass          = self.class.name_to_class(element_name)
-      objects        = doc.xpath("//#{element_name}")
+      xpath        ||= "//#{element_name}"
+      objects        = doc.xpath(xpath)
       objects.collect { |obj| xml_to_object(klass, obj) }
     end
 
