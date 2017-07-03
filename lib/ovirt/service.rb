@@ -288,15 +288,15 @@ module Ovirt
       full_xml
     end
 
-    def resource_get(path = nil)
-      resource_verb(path, :get)
+    def resource_get(path = nil, additional_headers = {:accept => 'application/xml'})
+      resource_verb(path, :get, additional_headers)
     end
 
-    def resource_put(path, payload, additional_headers = {:content_type => :xml, :accept => :xml})
+    def resource_put(path, payload, additional_headers = {:content_type => 'application/xml', :accept => 'application/xml'})
       resource_verb(path, :put, payload, additional_headers)
     end
 
-    def resource_post(path, payload, additional_headers = {:content_type => :xml, :accept => :xml})
+    def resource_post(path, payload, additional_headers = {:content_type => 'application/xml', :accept => 'application/xml'})
       resource_verb(path, :post, payload, additional_headers)
     end
 
