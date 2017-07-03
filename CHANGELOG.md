@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.17.1] - 2017-06-03
+### Bug Fixes
+- Use 'application/xml' explicitly in rest-client calls [#83]
+
 ## [0.17.0] - 2017-05-08
 ### Other changes
 - Allow overriding xpath path in #get_resources_by_uri_path [#82]
