@@ -60,5 +60,13 @@ module Ovirt
       parse_first_node(node, :libvirt_version, hash,
                        :attribute => [:major, :minor, :build, :revision, :full_version])
     end
+
+    def activate
+      operation(:activate)
+    end
+
+    def deactivate
+      operation(:deactivate)
+    end
   end
 end
