@@ -1,5 +1,7 @@
 module Ovirt
   module Logging
-    delegate :logger, :to => :Ovirt
+    def logger
+      Ovirt.logger
+    end
   end
 end
