@@ -62,14 +62,8 @@ module Ovirt
       @api_path   = @options[:path]
       @ca_certs   = @options[:ca_certs]
 
-      # Create a temporary file to store the CA certificates. This file will be deleted when the 'disconnect' method
-      # is called, or, if that is never called, when the Ruby process finishes.
+      # The temporary file to store the CA certificates will be created when needed:
       @ca_file = nil
-      if @ca_certs
-        @ca_file = Tempfile.new('ca_file')
-        @ca_file.write(@ca_certs)
-        @ca_file.close
-      end
     end
 
     def inspect # just like the default inspect, but WITHOUT @password
@@ -156,7 +150,10 @@ module Ovirt
 
     def disconnect
       # Remove the temporary file that was created to store the trusted CA certificates:
-      @ca_file.unlink if @ca_file
+      if @ca_file
+        @ca_file.unlink
+        @ca_file = nil
+      end
     end
 
     def get_resource_by_ems_ref(uri_suffix, element_name = nil)
@@ -392,7 +389,7 @@ module Ovirt
       options[:timeout]      = timeout      if timeout
       options[:open_timeout] = open_timeout if open_timeout
       options[:verify_ssl]   = verify_ssl   unless verify_ssl.nil?
-      options[:ssl_ca_file]  = @ca_file.path if @ca_file
+      options[:ssl_ca_file]  = ca_file.path if ca_file
       options
     end
 
@@ -466,6 +463,21 @@ module Ovirt
       return if v.blank?
       v = v.sub("-", ".").split(".")[0..3]
       Hash[[:major, :minor, :revision, :build].zip(v)]
+    end
+
+    #
+    # Returns a file object containing the trusted CA certificates. The file will be created if it
+    # doesn't exist, and it shouldn't be removed or modified by the caller.
+    #
+    # @return [File] The temporary file containing the trusted CA certificates, or nil if no custom
+    #   CA certificates are used by the connection.
+    #
+    def ca_file
+      return unless @ca_certs
+      @ca_file ||= Tempfile.new('ca_file').tap do |tempfile|
+        tempfile.write(@ca_certs)
+        tempfile.close
+      end
     end
   end
 end
