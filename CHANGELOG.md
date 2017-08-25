@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+
+## [0.18.0] - 2017-08-25
+### Bug Fixes
+- Create trusted CA certificates file when needed [(#88)](https://github.com/ManageIQ/ovirt/pull/88)
+- Remove ActiveSupport reference [(#87)](https://github.com/ManageIQ/ovirt/pull/87)
+
+### Other changes
+- Add some missing Host maintenance events [(#85)](https://github.com/ManageIQ/ovirt/pull/85)
+
 ## [0.17.1] - 2017-06-03
 ### Bug Fixes
 - Use 'application/xml' explicitly in rest-client calls [#83]
@@ -63,3 +73,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Other changes
 - Remove "ovirt-engine" prefix from paths [#55]
 - Drop dependency on ActiveSupport due to Rails 5 minimum Ruby version [#57]
+
+[Unreleased]: https://github.com/ManageIQ/ovirt/compare/v0.18.0...master
+[0.18.0]: https://github.com/ManageIQ/ovirt/compare/v0.17.1...v0.18.0
