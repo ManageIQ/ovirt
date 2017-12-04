@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.18.1] - 2017-12-04
+### Bug Fixes
+- Refresh fails when placement policy not set [(#89)](https://github.com/ManageIQ/ovirt/pull/89)
+
 ## [0.18.0] - 2017-08-25
 ### Bug Fixes
 - Create trusted CA certificates file when needed [(#88)](https://github.com/ManageIQ/ovirt/pull/88)
@@ -74,5 +78,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Remove "ovirt-engine" prefix from paths [#55]
 - Drop dependency on ActiveSupport due to Rails 5 minimum Ruby version [#57]
 
-[Unreleased]: https://github.com/ManageIQ/ovirt/compare/v0.18.0...master
+[Unreleased]: https://github.com/ManageIQ/ovirt/compare/v0.18.1...master
+[0.18.1]: https://github.com/ManageIQ/ovirt/compare/v0.18.0...v0.18.1
 [0.18.0]: https://github.com/ManageIQ/ovirt/compare/v0.17.1...v0.18.0
