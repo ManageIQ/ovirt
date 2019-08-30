@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
   spec.test_files   += %w[.rspec]
   spec.require_paths = ["lib"]
 
-  spec.required_ruby_version = ">= 2.0.0"
+  spec.required_ruby_version = ">= 2.3.0"
 
   # Prevent factory_bot from installing activesupport v5 (incompatible with Ruby < 2.2.2)
   spec.add_development_dependency "activesupport", "< 5"
