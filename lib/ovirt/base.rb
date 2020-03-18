@@ -27,6 +27,14 @@ module Ovirt
       actions
     end
 
+    def self.response_to_action(response)
+      node = xml_to_nokogiri(response)
+      action = node.xpath('//action').first
+
+      raise Ovirt::Error, "No Action in Response: #{response.inspect}" unless action
+      action
+    end
+
     def self.hash_from_id_and_href(node)
       hash = {}
       [:id, :href].each { |key| hash[key] = node[key.to_s] unless node.nil? || node[key.to_s].nil? }
@@ -255,11 +263,11 @@ module Ovirt
       replace(self.class.find_by_href(@service, self[:href]))
     end
 
-    def method_missing(m, *args)
+    def method_missing(m, *args, &block)
       if @relationships.key?(m)
         relationship(m)
       elsif @operations.key?(m)
-        operation(m, args)
+        operation(m, args, &block)
       elsif @attributes.key?(m)
         @attributes[m]
       else

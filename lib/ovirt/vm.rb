@@ -58,6 +58,14 @@ module Ovirt
       super
     end
 
+    def export(storage_domain)
+      response = operation(:export) do |xml|
+        xml.storage_domain(:id => self.class.object_to_id(storage_domain))
+      end
+
+      self.class.response_to_action(response)['href'] 
+    end
+
     def move(storage_domain)
       response = operation(:move) do |xml|
         xml.storage_domain(:id => self.class.object_to_id(storage_domain))
@@ -74,10 +82,8 @@ module Ovirt
       #     <state>pending</state>
       #   </status>
       # </action>
-      doc    = Nokogiri::XML(response)
-      action = doc.xpath("//action").first
-      raise Ovirt::Error, "No Action in Response: #{response.inspect}" if action.nil?
-      action['href']
+      
+      self.class.response_to_action(response)['href'] 
     end
 
     def boot_order=(devices)
