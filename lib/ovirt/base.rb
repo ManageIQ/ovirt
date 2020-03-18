@@ -32,6 +32,7 @@ module Ovirt
       action = node.xpath('//action').first
 
       raise Ovirt::Error, "No Action in Response: #{response.inspect}" unless action
+
       action
     end
 
@@ -263,16 +264,20 @@ module Ovirt
       replace(self.class.find_by_href(@service, self[:href]))
     end
 
-    def method_missing(m, *args, &block)
-      if @relationships.key?(m)
-        relationship(m)
-      elsif @operations.key?(m)
-        operation(m, args, &block)
-      elsif @attributes.key?(m)
-        @attributes[m]
+    def method_missing(method_name, *args, &block)
+      if @relationships.key?(method_name)
+        relationship(method_name)
+      elsif @operations.key?(method_name)
+        operation(method_name, args, &block)
+      elsif @attributes.key?(method_name)
+        @attributes[method_name]
       else
         super
       end
+    end
+
+    def respond_to_missing?(method_name, include_private = false)
+      (@relationships.key?(method_name) || @operations.key?(method_name) || @attributes.key?(method_name)) || super
     end
 
     def operation(method, *_args)

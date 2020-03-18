@@ -63,7 +63,7 @@ module Ovirt
         xml.storage_domain(:id => self.class.object_to_id(storage_domain))
       end
 
-      self.class.response_to_action(response)['href'] 
+      self.class.response_to_action(response)['href']
     end
 
     def move(storage_domain)
@@ -82,8 +82,8 @@ module Ovirt
       #     <state>pending</state>
       #   </status>
       # </action>
-      
-      self.class.response_to_action(response)['href'] 
+
+      self.class.response_to_action(response)['href']
     end
 
     def boot_order=(devices)

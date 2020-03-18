@@ -18,5 +18,6 @@ loop do
   status = rhevm.status(action)
   puts "STATUS: #{status.inspect}"
   break if status == 'complete'
+
   sleep 1
 end
