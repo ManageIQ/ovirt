@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :service, :class => "Ovirt::Service" do
     server ""
     initialize_with { new(:server => server, :username => "", :password => "") }

@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :template, :class => "Ovirt::Template" do
     initialize_with { new(service, {}) }
     service { build(:service) }
