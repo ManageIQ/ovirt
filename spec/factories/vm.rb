@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :vm, :class => "Ovirt::Vm" do
     initialize_with { new(service, {}) }
     service { build(:service) }
