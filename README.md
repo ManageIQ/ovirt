@@ -4,7 +4,6 @@
 [![Build Status](https://travis-ci.org/ManageIQ/ovirt.svg)](https://travis-ci.org/ManageIQ/ovirt)
 [![Code Climate](https://codeclimate.com/github/ManageIQ/ovirt.svg)](https://codeclimate.com/github/ManageIQ/ovirt)
 [![Coverage Status](https://coveralls.io/repos/ManageIQ/ovirt/badge.svg)](https://coveralls.io/github/ManageIQ/ovirt)
-[![Security](https://hakiri.io/github/ManageIQ/ovirt/master.svg)](https://hakiri.io/github/ManageIQ/ovirt/master)
 
 Ovirt provides a simple Object Oriented interface to the REST API of oVirt and RHEV-M servers.
 
