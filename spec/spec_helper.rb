@@ -1,3 +1,8 @@
+if ENV['CI']
+  require 'simplecov'
+  SimpleCov.start
+end
+
 require 'factory_bot'
 FactoryBot.find_definitions
 
@@ -97,12 +102,6 @@ RSpec.configure do |config|
   #   Kernel.srand config.seed
   config.order = :random
   config.include FactoryBot::Syntax::Methods
-end
-
-begin
-  require 'coveralls'
-  Coveralls.wear!
-rescue LoadError
 end
 
 require 'ovirt'
