@@ -1,9 +1,9 @@
 # Ovirt
 
 [![Gem Version](https://badge.fury.io/rb/ovirt.svg)](http://badge.fury.io/rb/ovirt)
-[![Build Status](https://travis-ci.org/ManageIQ/ovirt.svg)](https://travis-ci.org/ManageIQ/ovirt)
+[![CI](https://github.com/ManageIQ/ovirt/actions/workflows/ci.yaml/badge.svg)](https://github.com/ManageIQ/ovirt/actions/workflows/ci.yaml)
 [![Code Climate](https://codeclimate.com/github/ManageIQ/ovirt.svg)](https://codeclimate.com/github/ManageIQ/ovirt)
-[![Coverage Status](https://coveralls.io/repos/ManageIQ/ovirt/badge.svg)](https://coveralls.io/github/ManageIQ/ovirt)
+[![Test Coverage](https://codeclimate.com/github/ManageIQ/ovirt/badges/coverage.svg)](https://codeclimate.com/github/ManageIQ/ovirt/coverage)
 
 Ovirt provides a simple Object Oriented interface to the REST API of oVirt and RHEV-M servers.
 
