@@ -1,3 +1,7 @@
+# This gem has been deprecated and will no longer be updated
+
+This gem supports the oVirt v3 API and not the newer v4 API.  If you are looking for a ruby gem for oVirt v4 check out [ovirt-engine-sdk](https://rubygems.org/gems/ovirt-engine-sdk)
+
 # Ovirt
 
 [![Gem Version](https://badge.fury.io/rb/ovirt.svg)](http://badge.fury.io/rb/ovirt)
